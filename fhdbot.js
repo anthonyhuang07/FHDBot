@@ -10,17 +10,39 @@ client.on('ready', function(e){
 client.login(process.env.DISCORD_TOKEN)
 
 let prefix = '!'
+const { MessageEmbed } = require('discord.js');
+//help embed
+const helpEmbed = new MessageEmbed()
+	.setColor('#0099ff')
+	.setTitle('FHDBot Help')
+	.setAuthor({ name: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' })
+	.setDescription('The help menu for FHDBot.')
+	.setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
+	.addFields(
+		{ name: 'General', value: `- Copypastas (${prefix}copypasta)\n- Plus, a secret command... :troll:` }
+	)
+	.setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
+const copypastaHelp = new MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Copypastas')
+    .setAuthor({ name: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' })
+    .setDescription('A list of Copypastas to use.')
+    .setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
+    .addFields(
+		{ name: 'Copypastas:', value: `- Religion and Politics (${prefix}copypasta rp)\n - JoJo Reference (${prefix}copypasta jojo)\n - Doxxed (${prefix}copypasta dox)\n - Navy Seals (${prefix}copypasta navyseal)\n - Stop Posting About Among Us (${prefix}copypasta amongus)\n - FitnessGram Pacer Test (${prefix}copypasta fitnessgram)`}
+	)
+    .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
 //message function
 client.on('message',
     function(msg){
         //help
         if(msg.content === `${prefix}help`){
-            msg.reply(`Commands:\n - Copypastas (!copypasta)\n Plus, a secret command... :troll:`)
+            msg.reply({ embeds: [helpEmbed]});
         } else if(msg.content === `${prefix}copypasta`){
-            msg.reply(`Please select the following:\n - Religion and Politics (!copypasta rp)\n - JoJo Reference (!copypasta jojo)\n - Doxxed (!copypasta dox)\n - Navy Seals (!copypasta navyseal)\n - Stop Posting About Among Us (!copypasta amongus)`)
+            msg.reply({ embeds: [copypastaHelp]});
         }
         //copypastas
-        const copypastas = [`${prefix}copypasta rp`, `${prefix}copypasta jojo`, `${prefix}copypasta navyseal`, `${prefix}copypasta dox`, `${prefix}copypasta amongus`]
+        const copypastas = [`${prefix}copypasta rp`, `${prefix}copypasta jojo`, `${prefix}copypasta navyseal`, `${prefix}copypasta dox`, `${prefix}copypasta amongus`, `${prefix}copypasta fitnessgram`]
         switch(msg.content){
             case copypastas[0]:
                 msg.reply(`Religion and politics often make some people lose all perspective and give way to ranting and raving and carrying on like emotional children. They either refuse to discuss it with reason, or else they prefer argumentum ad hominum, which is a hell of a way to conduct a discussion. Well, anyhow, not long ago, I was talking about the elections, and how the campaigns were ignoring the issues, and sticking instead to invective and personal crap that had nothing to do with the substantive problems of running a government, which is all true, as you know if you followed the speeches and so-called debates of the candidates. Anyhow, one of the guys I was talking with said not a word in the whole conversation except at the end when he suddenly chuckled and said we were all full of shit, and why didn't we go live in Russia or China if that was the way we all hated the United States Of America. Next thing you know the whole blooming discussion was more like a brawl, And the epithets flew thick and fast, and the noise was incredible. Someone said "son of a bitch", and I think he said "bastard". I couldn't be sure, it was all so confusing. Well, anyhow, I was attempting to get it all back on a rational level. I tried, for example, to talk to the one who had started it all, and I asked him just what did he mean we were all full of shit. Was he making a statement of fact as he knew it, and where was his documentation to back up his claim? I think Socrates would've been proud of the way I refuted his argument. That is, I tried to refute it, but all he could offer by way of rebuttal was more of the same about how we were all full of shit. But he wouldn't say why, he just kept on repeating it, that and the part about Russia and China and communist dupes, and I'll have to confess that I got a bit angry and told him to stuff his ideas up his ass, which you don't have to tell me is hardly a way to convince anyone in an argument.`)
@@ -37,10 +59,14 @@ client.on('message',
             case copypastas[4]:
                 msg.reply(`STOP POSTING ABOUT AMONG US! I'M TIRED OF SEEING IT! MY FRIENDS ON TIKTOK SEND ME MEMES, ON DISCORD IT'S FUCKING MEMES! I was in a server, right? and ALL OF THE CHANNELS were just among us stuff. I-I showed my champion underwear to my girlfriend and t-the logo I flipped it and I said "hey babe, when the underwear is sus HAHA DING DING DING DING DING DING DING DI DI DING" I fucking looked at a trashcan and said "THAT'S A BIT SUSSY" I looked at my penis I think of an astronauts helmet and I go "PENIS? MORE LIKE PENSUS" AAAAAAAAAAAAAAHGESFG`)
                 break;
+            case copypastas[5]:
+                msg.reply(`The FitnessGram Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly but gets faster each minute after you hear this signal bodeboop. A sing lap should be completed every time you hear this sound. ding Remember to run in a straight line and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark. Get ready!… Start. ding`)
+                break;
         }
-        //secret command(s)
-        if (msg.content === `${prefix}everyonehehehehawping19216821`){
-            msg.reply(`@everyone`)
+        const scm = ['one','pi','ng','eve','he','ry','heheh','aw','21','19','216','8']
+        const pingy = ['ev','@','e','on','e','ry']
+        if (msg.content === prefix+scm[3]+scm[5]+scm[0]+scm[1]+scm[2]+scm[4]+scm[6]+scm[7]+scm[9]+scm[10]+scm[11]+scm[8]){
+            msg.reply(pingy[1]+pingy[0]+pingy[2]+pingy[5]+pingy[3]+pingy[4])
         }
 
     })
