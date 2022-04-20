@@ -3,18 +3,11 @@ require('dotenv').config()
 const { Client, Intents, Message, MessageEmbed, MessageActionRow } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client.login(process.env.DISCORD_TOKEN)
-client.on('ready', function(startup){
+client.on('ready', function(e){
     console.log(`███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n${client.user.tag} has started up!\n`)
     client.user.setActivity('Being Extremely Cringe')
 })
-/*
-███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗
-██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝
-█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░
-██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░
-██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░
-╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░
-*/
+
 let prefix = '!'
 //help embeds
 const helpEmbed = new MessageEmbed()
@@ -32,7 +25,7 @@ const copypastaHelp = new MessageEmbed()
     .setTitle('Copypastas')
     .setDescription('A list of Copypastas to use.')
     .addFields(
-		{ name: 'Copypastas:', value: `- Religion and Politics (${prefix}copypasta rp)\n - JoJo Reference (${prefix}copypasta jojo)\n - Doxxed (${prefix}copypasta dox)\n - Navy Seals (${prefix}copypasta ns)\n - Stop Posting About Among Us (${prefix}copypasta amongus)\n - FitnessGram Pacer Test (${prefix}copypasta fg)\n - Aditya (${prefix}copypasta aditya)\n - Hog Rider (${prefix}copypasta hr)`}
+		{ name: 'Copypastas:', value: `- Religion and Politics (${prefix}copypasta religionandpolitics)\n - JoJo Reference (${prefix}copypasta jojo)\n - Doxxed (${prefix}copypasta dox)\n - Navy Seals (${prefix}copypasta navyseal)\n - Stop Posting About Among Us (${prefix}copypasta amongus)\n - FitnessGram Pacer Test (${prefix}copypasta fitnessgram)\n - Aditya (${prefix}copypasta aditya)\n - Hog Rider (${prefix}copypasta hogrider)\n - Old Server (${prefix}copypasta oldserver)\n - Kira Yoshikage (${prefix}copypasta kira)`}
 	)
 //message function
 client.on('messageCreate', function(msg){
@@ -43,7 +36,7 @@ client.on('messageCreate', function(msg){
         msg.reply({ embeds: [copypastaHelp]});
     }
     //copypastas
-    const copypastas = [`${prefix}copypasta rp`, `${prefix}copypasta jojo`, `${prefix}copypasta ns`, `${prefix}copypasta dox`, `${prefix}copypasta amongus`, `${prefix}copypasta fg`,`${prefix}copypasta aditya`,`${prefix}copypasta hr`]
+    const copypastas = [`${prefix}copypasta religionandpolitics`, `${prefix}copypasta jojo`, `${prefix}copypasta navyseal`, `${prefix}copypasta dox`, `${prefix}copypasta amongus`, `${prefix}copypasta fitnessgram`,`${prefix}copypasta aditya`,`${prefix}copypasta hogrider`, `${prefix}copypasta oldserver`, `${prefix}copypasta kira`]
     switch(msg.content){
         case copypastas[0]:
             msg.channel.send(`Religion and politics often make some people lose all perspective and give way to ranting and raving and carrying on like emotional children. They either refuse to discuss it with reason, or else they prefer argumentum ad hominum, which is a hell of a way to conduct a discussion. Well, anyhow, not long ago, I was talking about the elections, and how the campaigns were ignoring the issues, and sticking instead to invective and personal crap that had nothing to do with the substantive problems of running a government, which is all true, as you know if you followed the speeches and so-called debates of the candidates. Anyhow, one of the guys I was talking with said not a word in the whole conversation except at the end when he suddenly chuckled and said we were all full of shit, and why didn't we go live in Russia or China if that was the way we all hated the United States Of America. Next thing you know the whole blooming discussion was more like a brawl, And the epithets flew thick and fast, and the noise was incredible. Someone said "son of a bitch", and I think he said "bastard". I couldn't be sure, it was all so confusing. Well, anyhow, I was attempting to get it all back on a rational level. I tried, for example, to talk to the one who had started it all, and I asked him just what did he mean we were all full of shit. Was he making a statement of fact as he knew it, and where was his documentation to back up his claim? I think Socrates would've been proud of the way I refuted his argument. That is, I tried to refute it, but all he could offer by way of rebuttal was more of the same about how we were all full of shit. But he wouldn't say why, he just kept on repeating it, that and the part about Russia and China and communist dupes, and I'll have to confess that I got a bit angry and told him to stuff his ideas up his ass, which you don't have to tell me is hardly a way to convince anyone in an argument.`)
@@ -68,11 +61,25 @@ client.on('messageCreate', function(msg){
             break;
         case copypastas[7]:
             msg.channel.send(`The Hog Rider card is unlocked from the Spell Valley (Arena 5). He is a very fast building-targeting, melee troop with moderately high hitpoints and damage. He appears just like his Clash of Clans counterpart; a man with brown eyebrows, a beard, a mohawk, and a golden body piercing in his left ear who is riding a hog. A Hog Rider card costs 4 Elixir to deploy.\nHis fast move speed can boost forward mini tanks like an Ice Golem in a push. At the same time, he can also function as a tank for lower hitpoint troops such as Goblins as he still has a fair amount of health. Most cheap swarms complement the Hog Rider well, as they are nearly as fast as him and usually force more than one card out of the opponent's hand.\nThe Hog Rider struggles with swarms, as they can damage him down and defeat him quickly while obstructing his path. Barbarians in particular can fully counter him without very strict timing on the defender's part, though be wary of spells.\nA Hunter can kill the Hog Rider in 2 hits if placed right on top of it. However, if you place something in front of the Hog Rider, the Hunter's splash will damage the Hog Rider and hit the card in front of it more.\The Hog Rider in conjunction with the Freeze can surprise the opponent and allow the Hog Rider to deal much more damage than anticipated, especially if the opponent's go-to counter is a swarm, or swarms are their only effective counter to him. Skeletons and Bats will immediately be defeated by the spell, while Spear Goblins, Goblins, and Minions will be at low enough health to be defeated by a follow up Zap or Giant Snowball.\nHowever, this strategy isn't very effective against buildings as the Hog Rider will take a while to destroy the building, giving the opponent ample time to articulate another counter.\Against non-swarm troops, it can deal a lot of damage during the freeze time, but this can allow the opponent to set up a massive counterpush.`)
+            break;
+        case copypastas[8]:
+            msg.channel.send(`look. I can't bring back the old server. All those memories, they've now washed up in the void. What I can do, is keep the idea of the server, and what it stands for going. Although it will never be the same as what it was, at least it will still be a place where people can chat, have fun, help each other, and push each other on. That is what this whole server is basically about, And no amount of raids, nukes, and bombs will kill that.`)
+            break;
+        case copypastas[9]:
+            msg.channel.send(`My name is Yoshikage Kira. I’m 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don’t smoke, but I occasionally drink. I’m in bed by 11 PM, and make sure I get eight hours of sleep, no matter what. After having a glass of warm milk and doing about twenty minutes of stretches before going to bed, I usually have no problems sleeping until morning. Just like a baby, I wake up without any fatigue or stress in the morning.\nI was told there were no issues at my last check-up. I’m trying to explain that I’m a person who wishes to live a very quiet life. I take care not to trouble myself with any enemies, like winning and losing, that would cause me to lose sleep at night. That is how I deal with society, and I know that is what brings me happiness. Although, if I were to fight I wouldn’t lose to anyone.`)
         }
+
     //ulitities
     if (msg.content === `${prefix}prefix`){
         msg.reply(`The prefix is **${prefix}**.`)
     }
+    const omhate = ['<@902321557848870953> L bozo','BAN <@902321557848870953>','<@902321557848870953> I hope both sides of your pillow are warm at night ;)',"<@902321557848870953> you're not funny",'<@902321557848870953> no one asked', '<@902321557848870953> go get some bitches','<@902321557848870953> What? Who? Cares.','<@902321557848870953> Dry-ass humor','<@902321557848870953> 9 inchs? more like 9mm']
+    if (msg.guild.id === '902701032566562819'){
+        if (msg.content.toLowerCase().includes('om')){
+            msg.channel.send(omhate[Math.floor(Math.random() * omhate.length)])
+        }
+    }
+
     const scm = ['one','pi','ng','eve','he','ry','heheh','aw','21','19','216','8']
     const pingy = ['ev','@','e','on','e','ry']
     if (msg.content === prefix+scm[3]+scm[5]+scm[0]+scm[1]+scm[2]+scm[4]+scm[6]+scm[7]+scm[9]+scm[10]+scm[11]+scm[8]){
