@@ -1,42 +1,78 @@
-//authentication and random magic
+//env pulling and random inclusions
 require('dotenv').config()
-const { Client, Intents, Message, MessageEmbed, MessageActionRow } = require('discord.js');
+const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client.login(process.env.DISCORD_TOKEN)
+//logs startup to console
 client.on('ready', function(e){
     console.log(`███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n${client.user.tag} has started up!\n`)
-    client.user.setActivity('Being Extremely Cringe')
+    client.user.setActivity('i need help with buttons')
 })
-
-let prefix = '!'
-//help embeds
-const helpEmbed = new MessageEmbed()
-	.setColor('#0099ff')
-	.setTitle('FHDBot Help')
-	.setDescription('The help menu for FHDBot.')
-	.setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
-	.addFields(
-		{ name: 'General', value: `- Copypastas (${prefix}copypasta)`},
-        { name: 'Utilities', value: `- Prefix (${prefix}prefix)\n\nPlus, a secret command... :troll:` }
-	)
-	.setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
-const copypastaHelp = new MessageEmbed()
-    .setColor('#0099ff')
-    .setTitle('Copypastas')
-    .setDescription('A list of Copypastas to use.')
-    .addFields(
-		{ name: 'Copypastas:', value: `- Religion and Politics (${prefix}copypasta religionandpolitics)\n - JoJo Reference (${prefix}copypasta jojo)\n - Doxxed (${prefix}copypasta dox)\n - Navy Seals (${prefix}copypasta navyseal)\n - Stop Posting About Among Us (${prefix}copypasta amongus)\n - FitnessGram Pacer Test (${prefix}copypasta fitnessgram)\n - Aditya (${prefix}copypasta aditya)\n - Hog Rider (${prefix}copypasta hogrider)\n - Old Server (${prefix}copypasta oldserver)\n - Kira Yoshikage (${prefix}copypasta kira)`}
-	)
-//message function
+//commands and prefixes?
+let prefix = '!';
+const copypastacmd = `${prefix}copypasta`;
+//bot invited
+client.on('guildCreate', guild => {
+    guild.systemChannel.send(`Hi, I'm FHDBot. Thanks for inviting me! You can find my commands by typing !help.`)
+});
+//main commands
 client.on('messageCreate', function(msg){
     //help
     if(msg.content === `${prefix}help`){
+        const helpEmbed = new MessageEmbed()
+	    .setColor('#0099ff')
+	    .setTitle('FHDBot Help')
+	    .setDescription('The help menu for FHDBot.')
+	    .setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
+	    .addFields(
+		    { name: 'General', value: `- Copypastas (${copypastacmd})`},
+            { name: 'Utilities', value: `- Prefix (${prefix}prefix)\n\nPlus, a secret command... :troll:` }
+	    )
+	    .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
         msg.reply({ embeds: [helpEmbed]});
-    } else if(msg.content === `${prefix}copypasta`){
-        msg.reply({ embeds: [copypastaHelp]});
+    }
+    if(msg.content === copypastacmd || msg.content === `${copypastacmd} 1`){
+        const copypastahelprow = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('left')
+                .setLabel('⬅️')
+                .setStyle('PRIMARY')
+                .setDisabled(true),
+            new MessageButton()
+                .setCustomId('right')
+                .setLabel('➡️')
+                .setStyle('PRIMARY'),
+        );
+        const copypastaHelp = new MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Copypastas')
+        .setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
+        .addFields(
+		    { name: 'Copypastas (Page 1):', value: `- Religion and Politics (${copypastacmd} religion)\n - JoJo Reference (${copypastacmd} jojo)\n - Doxxed (${copypastacmd} dox)\n - Navy Seals (${copypastacmd} navy)\n - Stop Posting About Among Us (${copypastacmd} amogus)\n - FitnessGram Pacer Test (${copypastacmd} fitness)\n - Aditya (${copypastacmd} aditya)\n`}
+        )
+        .setFooter({ text: `Page 1/2 - To go to other pages, type ${copypastacmd} (page)`});
+        msg.reply({embeds: [copypastaHelp], components: [copypastahelprow] });
+    } else if(msg.content === `${copypastacmd} 2`){
+        const copypastahelprow2 = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('primary')
+                .setLabel('Primary')
+                .setStyle('PRIMARY'),
+        );
+        const copypastaHelp2 = new MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Copypastas')
+        .setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
+        .addFields(
+		    { name: 'Copypastas (Page 2):', value: `- Hog Rider (${copypastacmd} hog)\n - Old Server (${copypastacmd} old)\n - Kira Yoshikage (${copypastacmd} kira)\n - Existence (${copypastacmd} existence)\n - The Letter A (${copypastacmd}} a)\n - MEE6 Death (${copypastacmd}} death @<user>)`}
+        )
+        .setFooter({ text: `Page 2/2 - To go to other pages, type ${copypastacmd} (page)`});
+        msg.reply({embeds: [copypastaHelp2], components: [copypastahelprow2] });
     }
     //copypastas
-    const copypastas = [`${prefix}copypasta religionandpolitics`, `${prefix}copypasta jojo`, `${prefix}copypasta navyseal`, `${prefix}copypasta dox`, `${prefix}copypasta amongus`, `${prefix}copypasta fitnessgram`,`${prefix}copypasta aditya`,`${prefix}copypasta hogrider`, `${prefix}copypasta oldserver`, `${prefix}copypasta kira`]
+    const copypastas = [`${copypastacmd} religion`, `${copypastacmd} jojo`, `${copypastacmd} navy`, `${copypastacmd} dox`, `${copypastacmd} amogus`, `${copypastacmd} fitness`,`${copypastacmd} aditya`,`${copypastacmd} hog`, `${copypastacmd} old`, `${copypastacmd} kira`, `${copypastacmd} existence`, `${copypastacmd} a`, `${copypastacmd} death`]
     switch(msg.content){
         case copypastas[0]:
             msg.channel.send(`Religion and politics often make some people lose all perspective and give way to ranting and raving and carrying on like emotional children. They either refuse to discuss it with reason, or else they prefer argumentum ad hominum, which is a hell of a way to conduct a discussion. Well, anyhow, not long ago, I was talking about the elections, and how the campaigns were ignoring the issues, and sticking instead to invective and personal crap that had nothing to do with the substantive problems of running a government, which is all true, as you know if you followed the speeches and so-called debates of the candidates. Anyhow, one of the guys I was talking with said not a word in the whole conversation except at the end when he suddenly chuckled and said we were all full of shit, and why didn't we go live in Russia or China if that was the way we all hated the United States Of America. Next thing you know the whole blooming discussion was more like a brawl, And the epithets flew thick and fast, and the noise was incredible. Someone said "son of a bitch", and I think he said "bastard". I couldn't be sure, it was all so confusing. Well, anyhow, I was attempting to get it all back on a rational level. I tried, for example, to talk to the one who had started it all, and I asked him just what did he mean we were all full of shit. Was he making a statement of fact as he knew it, and where was his documentation to back up his claim? I think Socrates would've been proud of the way I refuted his argument. That is, I tried to refute it, but all he could offer by way of rebuttal was more of the same about how we were all full of shit. But he wouldn't say why, he just kept on repeating it, that and the part about Russia and China and communist dupes, and I'll have to confess that I got a bit angry and told him to stuff his ideas up his ass, which you don't have to tell me is hardly a way to convince anyone in an argument.`)
@@ -67,19 +103,28 @@ client.on('messageCreate', function(msg){
             break;
         case copypastas[9]:
             msg.channel.send(`My name is Yoshikage Kira. I’m 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don’t smoke, but I occasionally drink. I’m in bed by 11 PM, and make sure I get eight hours of sleep, no matter what. After having a glass of warm milk and doing about twenty minutes of stretches before going to bed, I usually have no problems sleeping until morning. Just like a baby, I wake up without any fatigue or stress in the morning.\nI was told there were no issues at my last check-up. I’m trying to explain that I’m a person who wishes to live a very quiet life. I take care not to trouble myself with any enemies, like winning and losing, that would cause me to lose sleep at night. That is how I deal with society, and I know that is what brings me happiness. Although, if I were to fight I wouldn’t lose to anyone.`)
+            break;
+        case copypastas[10]:
+            msg.channel.send(`Existence is merely nothing but a social construct to fill in the void of all time and space, our existence is practically nothing more than pure luck, and the right conditions. For example the Big Bang, no one exactly knows how it happened but if it didn’t, none of us would be here. Or maybe, what would happen if the meteorite hadn’t hit earth? Would everything have stayed the same or would we all have been completely different. Everything had to happen at the right time and under the right conditions and if any of these certain circumstances were to change, we probably would not have existed in this timeline, not to mention we might not have existed at all. In a different point of view, what would life of been if things didnt happen, if the great library of Alexandria hadn’t burnt to a crisp, how much knowledge of our past could we have saved? Or if the recipe for concrete wasn’t tragically lost, could we have developed 400 more years into the future? Because of this random series of events that led to our existence, we are given a chance at life, however no matter how much we do, say or change, life would ultimately just lead us to our inevitable deaths. In fact, everything in our daily lives, school, work, jobs, hobbies, are all just time fillers til you’re eighty or above if you’re lucky. Take a moment to think about this, would your grades in 100 years matter? Would your heart break in matter in 100 years? Or maybe even  the people you affected, would anything you say or do matter in 100 years? Maybe if you’re lucky and you somehow solve the cure for cancer, or break a new world record, or if you’re Elon musk, then maybe the world might, just might, remember you. In short are all just basically a bunch of atoms floating around, life, humans, ecosystems. We are all just on a floating piece of rock in outer space.  Now this concept that nothing really matters might be quite depressing for some, but maybe it could be closure for others.`)
+            break;
+        case copypastas[11]:
+            msg.channel.send(`You thought you just did something there didn't you? Well sorry to burst your bubble, but numerous sentences could be constructed without the use of the first letter of the English lexicon.`)
+            break;
+        case copypastas[12]:
+            msg.channel.send(`<@159985870458322944>, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
         }
-
+    if(msg.content.toLowerCase().startsWith(copypastas[12])){
+        if (!msg.mentions.members.size) return false;
+        msg.channel.send(`${msg.mentions.members.first()}, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
+    }
+    if(msg.content === `${copypastacmd} random`){
+        msg.channel.send(copypastas[Math.floor(Math.random() * copypastas.length)])
+    }
     //ulitities
-    if (msg.content === `${prefix}prefix`){
-        msg.reply(`The prefix is **${prefix}**.`)
+    if(msg.content === `${prefix}prefix` || msg.content === `<@963533621812158474>`){
+        msg.reply(`The prefix is **${prefix}**.`);
     }
-    const omhate = ['<@902321557848870953> L bozo','BAN <@902321557848870953>','<@902321557848870953> I hope both sides of your pillow are warm at night ;)',"<@902321557848870953> you're not funny",'<@902321557848870953> no one asked', '<@902321557848870953> go get some bitches','<@902321557848870953> What? Who? Cares.','<@902321557848870953> Dry-ass humor','<@902321557848870953> 9 inchs? more like 9mm']
-    if (msg.guild.id === '902701032566562819'){
-        if (msg.content.toLowerCase().includes('om')){
-            msg.channel.send(omhate[Math.floor(Math.random() * omhate.length)])
-        }
-    }
-
+    //extras
     const scm = ['one','pi','ng','eve','he','ry','heheh','aw','21','19','216','8']
     const pingy = ['ev','@','e','on','e','ry']
     if (msg.content === prefix+scm[3]+scm[5]+scm[0]+scm[1]+scm[2]+scm[4]+scm[6]+scm[7]+scm[9]+scm[10]+scm[11]+scm[8]){
