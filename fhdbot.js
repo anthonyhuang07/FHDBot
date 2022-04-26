@@ -1,77 +1,103 @@
 //env pulling and random inclusions
+//-------------------------------------------------------
 require('dotenv').config()
 const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client.login(process.env.DISCORD_TOKEN)
 //logs startup to console
+//-------------------------------------------------------
 client.on('ready', function(e){
     console.log(`███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n${client.user.tag} has started up!\n`)
-    client.user.setActivity('i need help with buttons')
+    client.user.setActivity('Added Buttons')
 })
 //commands and prefixes?
+//-------------------------------------------------------
 let prefix = '!';
 const copypastacmd = `${prefix}copypasta`;
 //bot invited
+//-------------------------------------------------------
 client.on('guildCreate', guild => {
     guild.systemChannel.send(`Hi, I'm FHDBot. Thanks for inviting me! You can find my commands by typing !help.`)
 });
+//embeds and buttons
+//-------------------------------------------------------
+const helpEmbed = new MessageEmbed()
+.setColor('#0099ff')
+.setTitle('FHDBot Help')
+.setDescription('The help menu for FHDBot.')
+.setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
+.addFields(
+    { name: 'General', value: `- Copypastas (${copypastacmd})`},
+    { name: 'Utilities', value: `- Prefix (${prefix}prefix)\n\nPlus, a secret command... :troll:` }
+)
+.setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
+const copypastahelprow = new MessageActionRow()
+.addComponents(
+    new MessageButton()
+        .setCustomId('left')
+        .setLabel('⬅️')
+        .setStyle('PRIMARY')
+        .setDisabled(true),
+    new MessageButton()
+        .setCustomId('right')
+        .setLabel('➡️')
+        .setStyle('PRIMARY'),
+);
+const copypastaHelp = new MessageEmbed()
+.setColor('#0099ff')
+.setTitle('Copypastas')
+.setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
+.addFields(
+    { name: 'Copypastas (Page 1):', value: `- Religion and Politics (${copypastacmd} religion)\n - JoJo Reference (${copypastacmd} jojo)\n - Doxxed (${copypastacmd} dox)\n - Navy Seals (${copypastacmd} navy)\n - Stop Posting About Among Us (${copypastacmd} amogus)\n - FitnessGram Pacer Test (${copypastacmd} fitness)\n - Aditya (${copypastacmd} aditya)\n`}
+)
+.setFooter({ text: `Page 1/2 - To go to other pages, type ${copypastacmd} (page)`});
+const copypastahelprow2 = new MessageActionRow()
+.addComponents(
+    new MessageButton()
+        .setCustomId('left2')
+        .setLabel('⬅️')
+        .setStyle('PRIMARY'),
+    new MessageButton()
+        .setCustomId('right2')
+        .setLabel('➡️')
+        .setStyle('PRIMARY')
+        .setDisabled(true),
+);
+const copypastaHelp2 = new MessageEmbed()
+.setColor('#0099ff')
+.setTitle('Copypastas')
+.setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
+.addFields(
+    { name: 'Copypastas (Page 2):', value: `- Hog Rider (${copypastacmd} hog)\n - Old Server (${copypastacmd} old)\n - Kira Yoshikage (${copypastacmd} kira)\n - Existence (${copypastacmd} existence)\n - The Letter A (${copypastacmd}} a)\n - MEE6 Death (${copypastacmd}} death @<user>)`}
+)
+.setFooter({ text: `Page 2/2 - To go to other pages, type ${copypastacmd} (page)`});
 //main commands
-client.on('messageCreate', function(msg){
+//-------------------------------------------------------
+client.on('messageCreate', msg => {
     //help
+    //-------------------------------------------------------
     if(msg.content === `${prefix}help`){
-        const helpEmbed = new MessageEmbed()
-	    .setColor('#0099ff')
-	    .setTitle('FHDBot Help')
-	    .setDescription('The help menu for FHDBot.')
-	    .setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
-	    .addFields(
-		    { name: 'General', value: `- Copypastas (${copypastacmd})`},
-            { name: 'Utilities', value: `- Prefix (${prefix}prefix)\n\nPlus, a secret command... :troll:` }
-	    )
-	    .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
         msg.reply({ embeds: [helpEmbed]});
     }
     if(msg.content === copypastacmd || msg.content === `${copypastacmd} 1`){
-        const copypastahelprow = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId('left')
-                .setLabel('⬅️')
-                .setStyle('PRIMARY')
-                .setDisabled(true),
-            new MessageButton()
-                .setCustomId('right')
-                .setLabel('➡️')
-                .setStyle('PRIMARY'),
-        );
-        const copypastaHelp = new MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Copypastas')
-        .setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
-        .addFields(
-		    { name: 'Copypastas (Page 1):', value: `- Religion and Politics (${copypastacmd} religion)\n - JoJo Reference (${copypastacmd} jojo)\n - Doxxed (${copypastacmd} dox)\n - Navy Seals (${copypastacmd} navy)\n - Stop Posting About Among Us (${copypastacmd} amogus)\n - FitnessGram Pacer Test (${copypastacmd} fitness)\n - Aditya (${copypastacmd} aditya)\n`}
-        )
-        .setFooter({ text: `Page 1/2 - To go to other pages, type ${copypastacmd} (page)`});
         msg.reply({embeds: [copypastaHelp], components: [copypastahelprow] });
     } else if(msg.content === `${copypastacmd} 2`){
-        const copypastahelprow2 = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId('primary')
-                .setLabel('Primary')
-                .setStyle('PRIMARY'),
-        );
-        const copypastaHelp2 = new MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Copypastas')
-        .setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
-        .addFields(
-		    { name: 'Copypastas (Page 2):', value: `- Hog Rider (${copypastacmd} hog)\n - Old Server (${copypastacmd} old)\n - Kira Yoshikage (${copypastacmd} kira)\n - Existence (${copypastacmd} existence)\n - The Letter A (${copypastacmd}} a)\n - MEE6 Death (${copypastacmd}} death @<user>)`}
-        )
-        .setFooter({ text: `Page 2/2 - To go to other pages, type ${copypastacmd} (page)`});
-        msg.reply({embeds: [copypastaHelp2], components: [copypastahelprow2] });
+        msg.reply({ embeds: [copypastaHelp2], components: [copypastahelprow2] });
     }
+    client.on('interactionCreate', async ButtonInteraction => {
+        if(!ButtonInteraction.isButton()) return
+        if(ButtonInteraction.customId === 'right'){
+            await ButtonInteraction.update({ embeds: [copypastaHelp2], components: [copypastahelprow2] })
+            .then(console.log)
+            .catch(console.error);
+        } else if(ButtonInteraction.customId === 'left2'){
+            await ButtonInteraction.update({ embeds: [copypastaHelp], components: [copypastahelprow] })
+            .then(console.log)
+            .catch(console.error);
+        }
+    })
     //copypastas
+    //-------------------------------------------------------
     const copypastas = [`${copypastacmd} religion`, `${copypastacmd} jojo`, `${copypastacmd} navy`, `${copypastacmd} dox`, `${copypastacmd} amogus`, `${copypastacmd} fitness`,`${copypastacmd} aditya`,`${copypastacmd} hog`, `${copypastacmd} old`, `${copypastacmd} kira`, `${copypastacmd} existence`, `${copypastacmd} a`, `${copypastacmd} death`]
     switch(msg.content){
         case copypastas[0]:
@@ -121,10 +147,12 @@ client.on('messageCreate', function(msg){
         msg.channel.send(copypastas[Math.floor(Math.random() * copypastas.length)])
     }
     //ulitities
+    //-------------------------------------------------------
     if(msg.content === `${prefix}prefix` || msg.content === `<@963533621812158474>`){
         msg.reply(`The prefix is **${prefix}**.`);
     }
     //extras
+    //-------------------------------------------------------
     const scm = ['one','pi','ng','eve','he','ry','heheh','aw','21','19','216','8']
     const pingy = ['ev','@','e','on','e','ry']
     if (msg.content === prefix+scm[3]+scm[5]+scm[0]+scm[1]+scm[2]+scm[4]+scm[6]+scm[7]+scm[9]+scm[10]+scm[11]+scm[8]){
