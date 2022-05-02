@@ -1,87 +1,97 @@
-//env pulling and random inclusions
+//startup
 //-------------------------------------------------------
 require('dotenv').config()
 const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client.login(process.env.DISCORD_TOKEN)
-//logs startup to console
-//-------------------------------------------------------
 client.on('ready', function(e){
-    console.log(`███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n${client.user.tag} has started up!\n`)
-    client.user.setActivity('Added Buttons')
+    console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
+    client.user.setActivity(`can pooper's death`, { type: 'STREAMING', url: "https://www.twitch.tv/fhdhgngn" })
 })
-//commands and prefixes?
-//-------------------------------------------------------
-let prefix = '!';
-const copypastacmd = `${prefix}copypasta`;
 //bot invited
 //-------------------------------------------------------
 client.on('guildCreate', guild => {
-    guild.systemChannel.send(`Hi, I'm FHDBot. Thanks for inviting me! You can find my commands by typing !help.`)
+    guild.systemChannel.send(`Hi, I'm FHDBot. Thanks for inviting me! You can find my commands by typing ${prefix}help.`)
 });
-//embeds and buttons
+//other global variables
+//-------------------------------------------------------
+let prefix = '!';
+const ownerid = '628672513345454122';
+//help embeds and buttons
 //-------------------------------------------------------
 const helpEmbed = new MessageEmbed()
 .setColor('#0099ff')
 .setTitle('FHDBot Help')
 .setDescription('The help menu for FHDBot.')
-.setThumbnail('https://i.imgur.com/YNfQKw6.jpg')
+.setThumbnail('https://i.imgur.com/mERBq3H.jpg')
 .addFields(
-    { name: 'General', value: `- Copypastas (${copypastacmd})`},
-    { name: 'Utilities', value: `- Prefix (${prefix}prefix)\n\nPlus, a secret command... :troll:` }
+    { name: 'General', value: 
+    `- Prefix \`(${prefix}prefix)\`
+    - Server Info \`(${prefix}serverinfo)\n\`` },
+    { name: 'Fun', value: 
+    `- Copypastas \`(${prefix}copypasta)\`
+    - Shipping \`(${prefix}ship [1] [2])\`
+    \nPlus, a secret command... <:troll:970442196161544242>`}
 )
-.setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/YNfQKw6.jpg' });
-const copypastahelprow = new MessageActionRow()
-.addComponents(
-    new MessageButton()
-        .setCustomId('left')
-        .setLabel('⬅️')
-        .setStyle('PRIMARY')
-        .setDisabled(true),
-    new MessageButton()
-        .setCustomId('right')
-        .setLabel('➡️')
-        .setStyle('PRIMARY'),
-);
-const copypastaHelp = new MessageEmbed()
-.setColor('#0099ff')
-.setTitle('Copypastas')
-.setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
-.addFields(
-    { name: 'Copypastas (Page 1):', value: `- Religion and Politics (${copypastacmd} religion)\n - JoJo Reference (${copypastacmd} jojo)\n - Doxxed (${copypastacmd} dox)\n - Navy Seals (${copypastacmd} navy)\n - Stop Posting About Among Us (${copypastacmd} amogus)\n - FitnessGram Pacer Test (${copypastacmd} fitness)\n - Aditya (${copypastacmd} aditya)\n`}
-)
-.setFooter({ text: `Page 1/2 - To go to other pages, type ${copypastacmd} (page)`});
-const copypastahelprow2 = new MessageActionRow()
-.addComponents(
-    new MessageButton()
-        .setCustomId('left2')
-        .setLabel('⬅️')
-        .setStyle('PRIMARY'),
-    new MessageButton()
-        .setCustomId('right2')
-        .setLabel('➡️')
-        .setStyle('PRIMARY')
-        .setDisabled(true),
-);
-const copypastaHelp2 = new MessageEmbed()
-.setColor('#0099ff')
-.setTitle('Copypastas')
-.setDescription(`A list of Copypastas to use. Use ${copypastacmd} random for a random Copypasta. `)
-.addFields(
-    { name: 'Copypastas (Page 2):', value: `- Hog Rider (${copypastacmd} hog)\n - Old Server (${copypastacmd} old)\n - Kira Yoshikage (${copypastacmd} kira)\n - Existence (${copypastacmd} existence)\n - The Letter A (${copypastacmd}} a)\n - MEE6 Death (${copypastacmd}} death @<user>)`}
-)
-.setFooter({ text: `Page 2/2 - To go to other pages, type ${copypastacmd} (page)`});
+.setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
 //main commands
 //-------------------------------------------------------
 client.on('messageCreate', msg => {
+    const args = msg.content.slice(prefix.length).trim().split(' ');
+    const cmdwithargs = args.shift().toLowerCase();
+    const stringinput = msg.content.split(" ").slice(1).join(" ")
     //help
     //-------------------------------------------------------
-    if(msg.content === `${prefix}help`){
+    if(msg.content.toLowerCase() === `${prefix}help`){
         msg.reply({ embeds: [helpEmbed]});
     }
-    if(msg.content === copypastacmd || msg.content === `${copypastacmd} 1`){
+    if(msg.content.toLowerCase() === `${prefix}copypasta` || msg.content.toLowerCase() === `${prefix}copypasta 1`){
+        const copypastaHelp = new MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Copypastas')
+        .setDescription(`A list of Copypastas to use. Use ${prefix}copypasta random for a random Copypasta. `)
+        .addFields(
+            { name: 'Copypastas (Page 1):', value: `- Religion and Politics (${prefix}copypasta religion)\n - JoJo Reference (${prefix}copypasta jojo)\n - Doxxed (${prefix}copypasta dox)\n - Navy Seals (${prefix}copypasta navy)\n - Stop Posting About Among Us (${prefix}copypasta amogus)\n - FitnessGram Pacer Test (${prefix}copypasta fitness)\n - Aditya (${prefix}copypasta aditya)\n`}
+        )
+        .setFooter({ text: `Page 1/2 - To go to other pages, type ${prefix}copypasta (page)`});
+    
+        const copypastahelprow = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('left')
+                .setLabel('⬅️')
+                .setStyle('PRIMARY')
+                .setDisabled(true),
+            new MessageButton()
+                .setCustomId('right')
+                .setLabel('➡️')
+                .setStyle('PRIMARY'),
+        );
+    
         msg.reply({embeds: [copypastaHelp], components: [copypastahelprow] });
-    } else if(msg.content === `${copypastacmd} 2`){
+    } else if(msg.content.toLowerCase() === `${prefix}copypasta 2`){
+        const copypastahelprow2 = new MessageActionRow()
+        .addComponents(
+            new MessageButton()
+                .setCustomId('left2')
+                .setLabel('⬅️')
+                .setStyle('PRIMARY'),
+            new MessageButton()
+                .setCustomId('right2')
+                .setLabel('➡️')
+                .setStyle('PRIMARY')
+                .setDisabled(true),
+        );
+    
+        const copypastaHelp2 = new MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Copypastas')
+        .setDescription(`A list of Copypastas to use. Use ${prefix}copypasta random for a random Copypasta. `)
+        .addFields(
+            { name: 'Copypastas (Page 2):', value: `- Hog Rider \`(${prefix}copypasta hog)\`\n - Old Server \`(${prefix}copypasta old)\`\n - Kira Yoshikage \`(${prefix}copypasta kira)\`\n - Existence \`(${prefix}copypasta existence)\`\n - The Letter A \`(${prefix}copypasta a)\`\n - MEE6 Death \`(${prefix}copypasta death @<user>)\``}
+        )
+        .setFooter({ text: `Page 2/2 - To go to other pages, type ${prefix}copypasta (page)`});
+        
         msg.reply({ embeds: [copypastaHelp2], components: [copypastahelprow2] });
     }
     client.on('interactionCreate', async ButtonInteraction => {
@@ -96,10 +106,10 @@ client.on('messageCreate', msg => {
             .catch(console.error);
         }
     })
-    //copypastas
+    //fun
     //-------------------------------------------------------
-    const copypastas = [`${copypastacmd} religion`, `${copypastacmd} jojo`, `${copypastacmd} navy`, `${copypastacmd} dox`, `${copypastacmd} amogus`, `${copypastacmd} fitness`,`${copypastacmd} aditya`,`${copypastacmd} hog`, `${copypastacmd} old`, `${copypastacmd} kira`, `${copypastacmd} existence`, `${copypastacmd} a`, `${copypastacmd} death`]
-    switch(msg.content){
+    const copypastas = [`${prefix}copypasta religion`, `${prefix}copypasta jojo`, `${prefix}copypasta navy`, `${prefix}copypasta dox`, `${prefix}copypasta amogus`, `${prefix}copypasta fitness`,`${prefix}copypasta aditya`,`${prefix}copypasta hog`, `${prefix}copypasta old`, `${prefix}copypasta kira`, `${prefix}copypasta existence`, `${prefix}copypasta a`, `${prefix}copypasta death`]
+    switch(msg.content.toLowerCase()){
         case copypastas[0]:
             msg.channel.send(`Religion and politics often make some people lose all perspective and give way to ranting and raving and carrying on like emotional children. They either refuse to discuss it with reason, or else they prefer argumentum ad hominum, which is a hell of a way to conduct a discussion. Well, anyhow, not long ago, I was talking about the elections, and how the campaigns were ignoring the issues, and sticking instead to invective and personal crap that had nothing to do with the substantive problems of running a government, which is all true, as you know if you followed the speeches and so-called debates of the candidates. Anyhow, one of the guys I was talking with said not a word in the whole conversation except at the end when he suddenly chuckled and said we were all full of shit, and why didn't we go live in Russia or China if that was the way we all hated the United States Of America. Next thing you know the whole blooming discussion was more like a brawl, And the epithets flew thick and fast, and the noise was incredible. Someone said "son of a bitch", and I think he said "bastard". I couldn't be sure, it was all so confusing. Well, anyhow, I was attempting to get it all back on a rational level. I tried, for example, to talk to the one who had started it all, and I asked him just what did he mean we were all full of shit. Was he making a statement of fact as he knew it, and where was his documentation to back up his claim? I think Socrates would've been proud of the way I refuted his argument. That is, I tried to refute it, but all he could offer by way of rebuttal was more of the same about how we were all full of shit. But he wouldn't say why, he just kept on repeating it, that and the part about Russia and China and communist dupes, and I'll have to confess that I got a bit angry and told him to stuff his ideas up his ass, which you don't have to tell me is hardly a way to convince anyone in an argument.`)
             break;
@@ -138,24 +148,145 @@ client.on('messageCreate', msg => {
             break;
         case copypastas[12]:
             msg.channel.send(`<@159985870458322944>, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
-        }
-    if(msg.content.toLowerCase().startsWith(copypastas[12])){
-        if (!msg.mentions.members.size) return false;
+    } if(msg.content.toLowerCase().startsWith(copypastas[12])){
+        if(!msg.mentions.members.size) return false;
         msg.channel.send(`${msg.mentions.members.first()}, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
-    }
-    if(msg.content === `${copypastacmd} random`){
+    } else if(msg.content.toLowerCase() === `${prefix}copypasta random`){
         msg.channel.send(copypastas[Math.floor(Math.random() * copypastas.length)])
+    }
+
+    const ship = args[0]+args[1]
+    function shipcharcode(array){
+        let total = 1
+        for(let i = 0, l = array.length; i < l; i++){
+            let adder = array.charCodeAt(i)
+            total = total + adder
+        }
+        return total;
+    }
+    let percentage = (shipcharcode(ship)+420-69)%101
+    const towny = ['Tony','tony','Toeknee','toeknee','despotato#7521','TOEKNEE','TONY','Towny','towny']
+    const kasuh = ['Cassia','cassia','KaseUH','kaseuh','boyo#6859','KASEUH','CASSIA','UwU','Chair','Nobody','KasUH','kasuh','Kasuh','nobody','chair']
+    const stuffs = ['Everyone','Mia','mia','Smart']
+    for(let i = 0; i < towny.length; i++){
+        if (args[0] === towny[i] || args[1] === towny[i]){
+            for(let j = 0; j < kasuh.length; j++){
+                if (args[0] === kasuh[j] || args[1] === kasuh[j]){
+                    percentage = 100;
+                    break;
+                }
+            }
+        }
+    } for(let i = 0; i < towny.length; i++){
+        if (args[0] === towny[i] || args[1] === towny[i]){
+            for(let j = 0; j < stuffs.length; j++){
+                if (args[0] === stuffs[j] || args[1] === stuffs[j]){
+                    percentage = 0;
+                    break;
+                }
+            }
+        }
+    }
+    let opinion
+    let bar
+    const full = '<:full:970688329936928788>'
+    const empty = '<:empty:970688344868655134>'
+    if(percentage === 100){
+        opinion = '**PERFECT!** :heartpulse:'
+        bar = full+full+full+full+full+full+full+full+full+full
+    } else if(percentage <= 99 && percentage >= 90){
+        opinion = 'EXTREMELY Compatible! :laughing::heart:'
+        bar = full+full+full+full+full+full+full+full+full+empty
+    } else if(percentage < 90 && percentage >= 80){
+        opinion = 'Very Compatible! :smiley:'
+        bar = full+full+full+full+full+full+full+full+empty+empty
+    } else if(percentage < 80 && percentage >= 70){
+        opinion = 'Fairly Compatible! :blush:'
+        bar = full+full+full+full+full+full+full+empty+empty+empty
+    } else if(percentage === 69){
+        opinion = 'Nice :smirk:'
+        bar = full+empty+full+empty+full+empty+full+empty+full+empty
+    } else if(percentage < 69 && percentage >= 60){
+        opinion = 'A small chance of being compatible. 🙂'
+        bar = full+full+full+full+full+full+empty+empty+empty+empty
+    } else if(percentage < 60 && percentage >= 50){
+        opinion = 'Extremely small compatibility chance. 🤨'
+        bar = full+full+full+full+full+empty+empty+empty+empty+empty
+    } else if(percentage < 50 && percentage >= 40){
+        opinion = 'Not really compatible. 😐'
+        bar = full+full+full+full+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 40 && percentage >= 30){
+        opinion = 'Pretty bad match. 😕'
+        bar = full+full+full+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 30 && percentage >= 20){
+        opinion = 'Bad match. 🙁'
+        bar = full+full+empty+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 20 && percentage >= 10){
+        opinion = 'Awful match. :face_vomiting:'
+        bar = full+empty+empty+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 10 && percentage >= 1){
+        opinion = 'TERRIBLE MATCH :face_vomiting::skull:'
+        bar = empty+empty+empty+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage === 0){
+        opinion = `L YOU AREN'T COMPATIBLE AT ALL :rofl:`
+        bar = '💀💀💀💀💀💀💀💀💀💀'
+    }
+    const shipping = new MessageEmbed()
+    .setColor('#ff47cb')
+    .setTitle(`:heartpulse:  ${args[0]} and ${args[1]}  :heartpulse:`)
+    .setDescription(`${bar}\n\n**${percentage}%** - ${opinion}`)
+    if(cmdwithargs === `ship`){
+        if (!args[1]){
+            msg.reply(`Correct Usage: \`!ship <arg1> <arg2>\``)
+            return
+        } 
+        if (!msg.content.startsWith(prefix)) return
+        msg.channel.send({ embeds: [shipping] });
+    }
+
+    if(cmdwithargs === `say`){
+        if (!msg.content.startsWith(prefix)) return
+        if(msg.author.id == ownerid){
+            msg.delete()
+            .then(console.log)
+            .catch(console.error);
+            msg.channel.send(stringinput)
+        } else{
+            msg.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
     }
     //ulitities
     //-------------------------------------------------------
-    if(msg.content === `${prefix}prefix` || msg.content === `<@963533621812158474>`){
+    const serverInfo = new MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Server Info')
+    .setThumbnail(msg.guild.iconURL({ dynamic: true }))
+    .setDescription(`Information for ${msg.guild.name}`)
+    .addFields(
+        { name: 'General', value: 
+        `**Name:** ${msg.guild.name}
+        **Owner:** ${msg.guild.owner}`
+        }
+    )
+    .addFields(
+        { name: 'Statistics', value: 
+        `**Member Count:** ${msg.guild.memberCount}`
+        }
+    )
+    .setFooter({ text: `Guild ID: ${msg.guild.id}`});
+
+    if(msg.content.toLowerCase() === `${prefix}prefix` || msg.content === `<@963533621812158474>`){
         msg.reply(`The prefix is **${prefix}**.`);
+    }
+    if(msg.content.toLowerCase() === `${prefix}serverinfo`){
+        msg.reply({ embeds: [serverInfo] });
     }
     //extras
     //-------------------------------------------------------
-    const scm = ['one','pi','ng','eve','he','ry','heheh','aw','21','19','216','8']
-    const pingy = ['ev','@','e','on','e','ry']
-    if (msg.content === prefix+scm[3]+scm[5]+scm[0]+scm[1]+scm[2]+scm[4]+scm[6]+scm[7]+scm[9]+scm[10]+scm[11]+scm[8]){
-        msg.channel.send(pingy[1]+pingy[0]+pingy[2]+pingy[5]+pingy[3]+pingy[4])
+    const scm = String.fromCharCode(101, 118, 101, 114, 121, 111, 110, 101, 112, 105, 110, 103, 104, 101, 104, 101, 104, 101, 104, 97, 119, 49, 57, 50, 49, 54, 56, 50, 49)
+    const pingy = String.fromCharCode(64, 101, 118, 101, 114, 121, 111, 110, 101)
+    if(msg.content.toLowerCase() === prefix+scm){
+        msg.channel.send(pingy)
     }
 })
