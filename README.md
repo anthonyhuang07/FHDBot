@@ -1,7 +1,7 @@
 # FHDBot
 Just some random bot
 
-Features (so far): Copypastas
+Features (so far): Copypastas, Shipping
 
 DM @FHDHGNGN#6050 for suggestions (copypasta suggestions, etc.)
 
