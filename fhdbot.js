@@ -1,10 +1,10 @@
-//#region (startup)
+//#region (startup and variables)
 require('dotenv').config()
-const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction } = require('discord.js');
+const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction, MessageAttachment } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const config = require("./config.json");
 client.login(process.env.DISCORD_TOKEN)
-client.on('ready', function(e){
+client.on('ready', () => {
     console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
     client.user.setActivity(`can pooper MUKBANG`, { type: 'STREAMING', url: "https://www.twitch.tv/fhdhgngn" })
 })
@@ -16,68 +16,9 @@ client.on('guildCreate', guild => {
     .catch(console.error);
 });
 //#endregion
-//#region (help embeds and buttons)
-const helpEmbed = new MessageEmbed()
-.setColor('RANDOM')
-.setTitle('FHDBot Help')
-.setDescription('The help menu for FHDBot.')
-.setThumbnail('https://i.imgur.com/mERBq3H.jpg')
-.addFields(
-    { name: 'General', value: 
-    `- Prefix \`(${config.prefix}prefix)\`
-    - Message Send & API Ping \`(${config.prefix}ping)\`
-    - About FHDBot \`(${config.prefix}about)\``},
-    { name: 'Fun', value: 
-    `- Copypastas \`(${config.prefix}copypasta)\`
-    - Shipping \`(${config.prefix}ship [1] [2])\`
-    - Random Video (Under 2 Minutes) \`(${config.prefix}video)\`
-    - Your PP Size \`(${config.prefix}pp)\`
-    - Who Asked? \`(${config.prefix}whoasked)\``}
-)
-.setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
-const copypastaHelp = new MessageEmbed()
-.setColor('RANDOM')
-.setTitle('Copypastas')
-.setDescription(`A list of Copypastas to use. Use ${config.prefix}copypasta random for a random Copypasta. `)
-.addFields(
-    { name: 'Copypastas (Page 1):', value: `- Religion and Politics (${config.prefix}copypasta religion)\n - JoJo Reference (${config.prefix}copypasta jojo)\n - Doxxed (${config.prefix}copypasta dox)\n - Navy Seals (${config.prefix}copypasta navy)\n - Stop Posting About Among Us (${config.prefix}copypasta amogus)\n - FitnessGram Pacer Test (${config.prefix}copypasta fitness)\n - Aditya (${config.prefix}copypasta aditya)\n`}
-)
-.setFooter({ text: `Page 1/2 - To go to other pages, type ${config.prefix}copypasta (page)`});
-const copypastahelprow = new MessageActionRow()
-.addComponents(
-    new MessageButton()
-        .setCustomId('left')
-        .setLabel('⬅️')
-        .setStyle('PRIMARY')
-        .setDisabled(true),
-    new MessageButton()
-        .setCustomId('right')
-        .setLabel('➡️')
-        .setStyle('PRIMARY'),
-);
-const copypastahelprow2 = new MessageActionRow()
-.addComponents(
-    new MessageButton()
-        .setCustomId('left2')
-        .setLabel('⬅️')
-        .setStyle('PRIMARY'),
-    new MessageButton()
-        .setCustomId('right2')
-        .setLabel('➡️')
-        .setStyle('PRIMARY')
-        .setDisabled(true),
-);
-const copypastaHelp2 = new MessageEmbed()
-.setColor('RANDOM')
-.setTitle('Copypastas')
-.setDescription(`A list of Copypastas to use. Use ${config.prefix}copypasta random for a random Copypasta. `)
-.addFields(
-    { name: 'Copypastas (Page 2):', value: `- Hog Rider \`(${config.prefix}copypasta hog)\`\n - Old Server \`(${config.prefix}copypasta old)\`\n - Kira Yoshikage \`(${config.prefix}copypasta kira)\`\n - Existence \`(${config.prefix}copypasta existence)\`\n - The Letter A \`(${config.prefix}copypasta a)\`\n - MEE6 Death \`(${config.prefix}copypasta death @<user>)\``}
-)
-.setFooter({ text: `Page 2/2 - To go to other pages, type ${config.prefix}copypasta (page)`});
-//#endregion
+//#region (messageCreate)
 client.on('messageCreate', (message) => {
-    //#region (stuffs.)
+    //#region (variables)
     if (!message.content.startsWith(config.prefix)) return;
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = message.content.toLowerCase();
@@ -85,77 +26,74 @@ client.on('messageCreate', (message) => {
     const stringinput = args.join(" ")
     //#endregion
     //#region (help menus)
-    if(command === `${config.prefix}help`){
+    if(command === `${config.prefix}help` || message.content === `<@963533621812158474>`){
+        const helpEmbed = new MessageEmbed()
+        .setColor('RANDOM')
+        .setTitle('FHDBot Help')
+        .setDescription('The help menu for FHDBot.')
+        .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
+        .addFields(
+            { name: 'General', value: 
+            `- Prefix \`(${config.prefix}prefix)\`\n- Message Send & API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
+            { name: 'Fun', value: 
+            `- Copypastas \`(${config.prefix}copypasta)\`\n- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- Random Video (Under 2 Minutes) \`(${config.prefix}video)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Kirby's Return to Discord \`(${config.prefix}kirby)\` (UNFINISHED)`}
+        )
+        .setTimestamp()
+        .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
         message.reply({ embeds: [helpEmbed]});
-    }
-    if(command === `${config.prefix}copypasta` || command === `${config.prefix}copypasta 1`){
-        message.reply({embeds: [copypastaHelp], components: [copypastahelprow] });
-    } else if(command === `${config.prefix}copypasta 2`){
-        message.reply({ embeds: [copypastaHelp2], components: [copypastahelprow2] });
-    }
-    client.on('interactionCreate', async ButtonInteraction => {
-        if(!ButtonInteraction.isButton()) return
-        if(ButtonInteraction.customId === 'right'){
-            await ButtonInteraction.update({ embeds: [copypastaHelp2], components: [copypastahelprow2] })
-            .then(console.log)
-            .catch(console.error);
-        } else if(ButtonInteraction.customId === 'left2'){
-            await ButtonInteraction.update({ embeds: [copypastaHelp], components: [copypastahelprow] })
-            .then(console.log)
-            .catch(console.error);
+
+    } 
+    
+    if(command === `${config.prefix}ownerhelp`){
+        if (!message.content.startsWith(config.prefix)) return
+        if(message.author.id === config.ownerid){
+            const ownerHelp = new MessageEmbed()
+            .setColor('RANDOM')
+            .setTitle('FHDBot Help (Owner)')
+            .setDescription('The help menu for FHDBot. (Owner Commands)')
+            .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
+            .addFields(
+                { name: 'General', value: 
+                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\``},
+                { name: 'Fun', value: 
+                `- Custom PP Size \`(${config.prefix}custompp <args>)\`\n- Free Nitro \`(${config.prefix}nitro <@user>)\``}
+            )
+            .setTimestamp()
+            .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
+            message.reply({ embeds: [ownerHelp]})
+
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
         }
-    })
+    }
+    
+    if(command === `${config.prefix}copypasta`){
+        const copypastaHelp = new MessageEmbed()
+        .setColor('RANDOM')
+        .setTitle('Copypastas')
+        .setDescription(`A list of Copypastas to use.`)
+        .addFields(
+            { name: 'Copypastas:', value: `- Stop Posting About Among Us \`(${config.prefix}copypasta amogus)\`\n- Aditya \`(${config.prefix}copypasta aditya)\`\n- The Letter A \`(${config.prefix}copypasta a)\`\n- MEE6 Death \`(${config.prefix}copypasta mee6)\``}
+        )
+        message.reply({embeds: [copypastaHelp]});
+    }
+
     //#endregion
-    //#region (fun)
     //#region (copypastas)
-    const copypastas = [`${config.prefix}copypasta religion`, `${config.prefix}copypasta jojo`, `${config.prefix}copypasta navy`, `${config.prefix}copypasta dox`, `${config.prefix}copypasta amogus`, `${config.prefix}copypasta fitness`,`${config.prefix}copypasta aditya`,`${config.prefix}copypasta hog`, `${config.prefix}copypasta old`, `${config.prefix}copypasta kira`, `${config.prefix}copypasta existence`, `${config.prefix}copypasta a`, `${config.prefix}copypasta death`]
-    switch(command){
+    const copypastas = [`${config.prefix}copypasta amogus`,`${config.prefix}copypasta aditya`,`${config.prefix}copypasta a`,`${config.prefix}copypasta mee6`]
+    switch(command){    
         case copypastas[0]:
-            message.channel.send(`Religion and politics often make some people lose all perspective and give way to ranting and raving and carrying on like emotional children. They either refuse to discuss it with reason, or else they prefer argumentum ad hominum, which is a hell of a way to conduct a discussion. Well, anyhow, not long ago, I was talking about the elections, and how the campaigns were ignoring the issues, and sticking instead to invective and personal crap that had nothing to do with the substantive problems of running a government, which is all true, as you know if you followed the speeches and so-called debates of the candidates. Anyhow, one of the guys I was talking with said not a word in the whole conversation except at the end when he suddenly chuckled and said we were all full of shit, and why didn't we go live in Russia or China if that was the way we all hated the United States Of America. Next thing you know the whole blooming discussion was more like a brawl, And the epithets flew thick and fast, and the noise was incredible. Someone said "son of a bitch", and I think he said "bastard". I couldn't be sure, it was all so confusing. Well, anyhow, I was attempting to get it all back on a rational level. I tried, for example, to talk to the one who had started it all, and I asked him just what did he mean we were all full of shit. Was he making a statement of fact as he knew it, and where was his documentation to back up his claim? I think Socrates would've been proud of the way I refuted his argument. That is, I tried to refute it, but all he could offer by way of rebuttal was more of the same about how we were all full of shit. But he wouldn't say why, he just kept on repeating it, that and the part about Russia and China and communist dupes, and I'll have to confess that I got a bit angry and told him to stuff his ideas up his ass, which you don't have to tell me is hardly a way to convince anyone in an argument.`)
-            break;
-        case copypastas[1]:
-            message.channel.send(`‼️‼️HOLY FUCKING SHIT‼️‼️‼️‼️ IS THAT A MOTHERFUCKING JOJO REFERENCE??????!!!!!!!!!!11!1!1!1!1!1!1! 😱😱😱😱😱😱😱 JOJO IS THE BEST FUCKING ANIME 🔥🔥🔥🔥💯💯💯💯 JOSUKE IS SO BADASSSSS 😎😎😎😎😎😎😎👊👊👊👊👊 ORAORAORAORAORALORAORAORAORAORAORAORAORAORAORAORAORAORAORAORA 😩😩😩😩😩😩😩😩 😩😩😩😩 MUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDAMUDA 🤬😡🤬😡🤬😡🤬🤬😡🤬🤬😡WRYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY Yo Angelo!Yo Angelo!🗿 🗿 Yo Angelo!🗿 🗿 Yo Angelo! Yo Angelo!🗿 Yo Angelo! 🗿 Yo Angelo!🗿 🗿 Yo Angelo! 🗿 🗿 🗿 🗿 🗿 🗿 Yo Angelo!Yo Angelo!Yo Angelo! Yo Angelo!Yo Angelo!Yo Angelo! Yo Angelo!🗿 Yo Angelo! 🗿 Yo Angelo!Yo Angelo!🗿 🗿 Yo Angelo! 🗿 🗿 🗿 🗿 🗿 🗿 Yo Angelo! 🗿 Yo Angelo! 🗿 Yo Angelo!🗿 🗿 🗿 🗿 Yo Angelo! 🗿 🗿 Yo Angelo!🗿 Yo Angelo! 🗿 🗿 Yo Angelo!🗿 🗿 Yo Angelo! 🗿 Yo Angelo!Yo Angelo! 🗿 🗿 🗿 🗿 🗿 🗿 🗿 Yo Angelo!🗿 🗿 🗿 Yo Angelo!🗿 🗿 🗿 🗿 Yo Angelo! 🗿 Yo Angelo! Yo Angelo!Yo Angelo!Yo Angelo! Yo Angelo! 🗿 🗿 🗿 🗿 🗿 🗿 Oh you’re approaching me❓❓❓❓❓❓❓❓❓❓But it was me, Dio‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️😂🤣😂🤣😂🤣😂😂😂🤣🤣🤣😂😂😂 r/shitpostcrusaders r/unexpectedjojo r/expectedjojo perfectly balanced as all things should be r/unexpectedthanos r/expectedthanos for balance`)
-            break;
-        case copypastas[2]:
-            message.channel.send(`What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little "clever" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.`)
-            break;
-        case copypastas[3]:
-            message.channel.send(`IP: 92.28.211.234\nN:42 7462\nW: 12 4893\nSS NUMBER: 697911921519182016\nIPV6: fe80::5dcd::ef69::fb22::d9888½12\nUPNP: Enabled\nDMZ: 10.112.42.15\nMAC. 5A:78:3E:7E:00\nISP: Ucom Universal\nDNS: 8.8.8.8\nALT DNS: 1.1.1.8.1\nDNS SUFFIX: Dlink\nWAN: 100.23.10.15\nWAN TYPE: Private Nat\nGATEWAY: 192.168.0.1\nSUBNET MASK: 255.255.0.255\nUDP OPEN PORTS: 8080, 80\nTCP OPEN PORTS: 443\nROUTER VENDOR: ERICCSON\nDEVICE VENDOR: WIN32-X\nCONNECTION TYPE: Ethernet\nICMP HOPS:\n192.168.0.1\n192.168.1.1\n100.73.43.4\nhost-132.12.32.167.ucom.com\nhost-66.120.12.111.ucom.com\n36.134.67.189\n216.239.78.111\nsof02s32-in-f14.1e100.net\nTOTAL HOPS: 8\nACTIVE SERVICES\n[HTTP] 192.168.3.1:80 => 92.28.211.234:80\n[HTTP] 192.168.3.1:443 => 92.28.211.234:443\n[UDP] 192.168.0.1:788 => 192.168.1.1:6557\n[TCP] 192.168.54.43:7777 => 192.168.1.1:7778\n[TCP] 192.168.78.12:898 => 192.168.89.9:667\nEXTERNAL MAC: 6U:78:89:ER:O4\nMODEM JUMPS: 64`)
-            break;
-        case copypastas[4]:
             message.channel.send(`STOP POSTING ABOUT AMONG US! I'M TIRED OF SEEING IT! MY FRIENDS ON TIKTOK SEND ME MEMES, ON DISCORD IT'S FUCKING MEMES! I was in a server, right? and ALL OF THE CHANNELS were just among us stuff. I-I showed my champion underwear to my girlfriend and t-the logo I flipped it and I said "hey babe, when the underwear is sus HAHA DING DING DING DING DING DING DING DI DI DING" I fucking looked at a trashcan and said "THAT'S A BIT SUSSY" I looked at my penis I think of an astronauts helmet and I go "PENIS? MORE LIKE PENSUS" AAAAAAAAAAAAAAHGESFG`)
             break;
-        case copypastas[5]:
-            message.channel.send(`The FitnessGram Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly but gets faster each minute after you hear this signal bodeboop. A sing lap should be completed every time you hear this sound. ding Remember to run in a straight line and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark. Get ready!… Start. ding`)
-            break;
-        case copypastas[6]:
+        case copypastas[1]:
             message.channel.send(`1) are you stupid? (not really a question)\n2) I wasn't asking just you, noone cares about you i just put it there cause its funny\n3) Your not cool by saying "L+bozo+ratio..." so shut up\n4) Because you act like a idiot thinking oh ok hes just talking to me and not the other 40+(or smth) in the server\n5) Noone cares, you are not smart by correcting\n6) You are not smart by trying to correct someone\n7) how stupid are you? if you are going to do a copypasta atleast number it correct`)
             break;
-        case copypastas[7]:
-            message.channel.send(`The Hog Rider card is unlocked from the Spell Valley (Arena 5). He is a very fast building-targeting, melee troop with moderately high hitpoints and damage. He appears just like his Clash of Clans counterpart; a man with brown eyebrows, a beard, a mohawk, and a golden body piercing in his left ear who is riding a hog. A Hog Rider card costs 4 Elixir to deploy.\nHis fast move speed can boost forward mini tanks like an Ice Golem in a push. At the same time, he can also function as a tank for lower hitpoint troops such as Goblins as he still has a fair amount of health. Most cheap swarms complement the Hog Rider well, as they are nearly as fast as him and usually force more than one card out of the opponent's hand.\nThe Hog Rider struggles with swarms, as they can damage him down and defeat him quickly while obstructing his path. Barbarians in particular can fully counter him without very strict timing on the defender's part, though be wary of spells.\nA Hunter can kill the Hog Rider in 2 hits if placed right on top of it. However, if you place something in front of the Hog Rider, the Hunter's splash will damage the Hog Rider and hit the card in front of it more.\The Hog Rider in conjunction with the Freeze can surprise the opponent and allow the Hog Rider to deal much more damage than anticipated, especially if the opponent's go-to counter is a swarm, or swarms are their only effective counter to him. Skeletons and Bats will immediately be defeated by the spell, while Spear Goblins, Goblins, and Minions will be at low enough health to be defeated by a follow up Zap or Giant Snowball.\nHowever, this strategy isn't very effective against buildings as the Hog Rider will take a while to destroy the building, giving the opponent ample time to articulate another counter.\Against non-swarm troops, it can deal a lot of damage during the freeze time, but this can allow the opponent to set up a massive counterpush.`)
-            break;
-        case copypastas[8]:
-            message.channel.send(`look. I can't bring back the old server. All those memories, they've now washed up in the void. What I can do, is keep the idea of the server, and what it stands for going. Although it will never be the same as what it was, at least it will still be a place where people can chat, have fun, help each other, and push each other on. That is what this whole server is basically about, And no amount of raids, nukes, and bombs will kill that.`)
-            break;
-        case copypastas[9]:
-            message.channel.send(`My name is Yoshikage Kira. I’m 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don’t smoke, but I occasionally drink. I’m in bed by 11 PM, and make sure I get eight hours of sleep, no matter what. After having a glass of warm milk and doing about twenty minutes of stretches before going to bed, I usually have no problems sleeping until morning. Just like a baby, I wake up without any fatigue or stress in the morning.\nI was told there were no issues at my last check-up. I’m trying to explain that I’m a person who wishes to live a very quiet life. I take care not to trouble myself with any enemies, like winning and losing, that would cause me to lose sleep at night. That is how I deal with society, and I know that is what brings me happiness. Although, if I were to fight I wouldn’t lose to anyone.`)
-            break;
-        case copypastas[10]:
-            message.channel.send(`Existence is merely nothing but a social construct to fill in the void of all time and space, our existence is practically nothing more than pure luck, and the right conditions. For example the Big Bang, no one exactly knows how it happened but if it didn’t, none of us would be here. Or maybe, what would happen if the meteorite hadn’t hit earth? Would everything have stayed the same or would we all have been completely different. Everything had to happen at the right time and under the right conditions and if any of these certain circumstances were to change, we probably would not have existed in this timeline, not to mention we might not have existed at all. In a different point of view, what would life of been if things didnt happen, if the great library of Alexandria hadn’t burnt to a crisp, how much knowledge of our past could we have saved? Or if the recipe for concrete wasn’t tragically lost, could we have developed 400 more years into the future? Because of this random series of events that led to our existence, we are given a chance at life, however no matter how much we do, say or change, life would ultimately just lead us to our inevitable deaths. In fact, everything in our daily lives, school, work, jobs, hobbies, are all just time fillers til you’re eighty or above if you’re lucky. Take a moment to think about this, would your grades in 100 years matter? Would your heart break in matter in 100 years? Or maybe even  the people you affected, would anything you say or do matter in 100 years? Maybe if you’re lucky and you somehow solve the cure for cancer, or break a new world record, or if you’re Elon musk, then maybe the world might, just might, remember you. In short are all just basically a bunch of atoms floating around, life, humans, ecosystems. We are all just on a floating piece of rock in outer space.  Now this concept that nothing really matters might be quite depressing for some, but maybe it could be closure for others.`)
-            break;
-        case copypastas[11]:
+        case copypastas[2]:
             message.channel.send(`You thought you just did something there didn't you? Well sorry to burst your bubble, but numerous sentences could be constructed without the use of the first letter of the English lexicon.`)
             break;
-        case copypastas[12]:
-            if(message.mentions.members.size === TRUE){
-                message.channel.send(`${message.mentions.members.first()}, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
-            } else{
-                message.channel.send(`<@159985870458322944>, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
-            }
-            break;
-        case `${config.prefix}copypasta random`:
-            message.channel.send(copypastas[Math.floor(Math.random() * copypastas.length)])
-            break;
+        case copypastas[3]:
+            message.channel.send(`<@159985870458322944>, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
     }
     //#endregion
     //#region (shipping)
@@ -164,7 +102,7 @@ client.on('messageCreate', (message) => {
         let total = 1
         for(let i = 0, l = array.length; i < l; i++){
             let adder = array.charCodeAt(i)
-            total = total + adder
+            total += adder
         }
         return total;
     }
@@ -238,14 +176,15 @@ client.on('messageCreate', (message) => {
 
     if(cmdwithargs === `ship`){
         if (!args[1]){
-            message.reply(`Correct Usage: \`!ship <arg1> <arg2>\``)
+            message.reply(`Bruh, what do you want to ship???`)
             return
         } 
         if (!message.content.startsWith(config.prefix)) return
         message.channel.send({ embeds: [{
             color: '#fc6adf', 
             title: `:heartpulse:  ${args[0]} and ${args[1]}  :heartpulse:`,
-            description: `${bar}\n\n**${percentage}%** - ${opinion}`}]})
+            description: `${bar}\n\n**${percentage}%** - ${opinion}`,
+        }]})
         .then(console.log)
         .catch(console.error);
     }
@@ -293,43 +232,412 @@ client.on('messageCreate', (message) => {
     }
     //#endregion
     //#region (pp size)
-    const ppbar = ['8D','8=D','8==D','8===D','8====D','8=====D','8======D','8=======D','8========D','8=========D','8==========D','8===========D','8============D','8=============D','8==============D','8===============D','8================D','8=================D','8==================D','8===================D','8====================D']
-    const ppsize = new MessageEmbed()
-    .setColor('RANDOM')
-    .setTitle(`PP Size Calculator`)
-    .setDescription(`${message.author}'s pp size\n${ppbar[message.author.id % 21]}`)
+    const ppbar = ['You have no PP 🙁','8D','8=D','8==D','8===D','8====D','8=====D','8======D','8=======D','8========D','8=========D','8==========D','8===========D','8============D','8=============D','8==============D','8===============D','8================D','8=================D','8==================D','8===================D','8====================D']
     if(command.startsWith(`${config.prefix}pp`)){
+        if(message.author.id === '562859377816633372'){
+            message.channel.send(`Sorry, but you don't have a PP!`);
+            return
+        }
         if(!message.mentions.members.size){
-            message.channel.send({ embeds: [ppsize] });
+            message.channel.send({embeds:[{
+                color: 'RANDOM',
+                title: `PP Size Calculator`,
+                description: `${message.author}'s pp size\n${ppbar[Math.floor(Math.random() * ppbar.length)]}`
+            }]})
+        } else{
+            message.channel.send({embeds:[{
+                color: 'RANDOM',
+                title: `PP Size Calculator`,
+                description: `${message.mentions.users.first()}'s pp size\n${ppbar[Math.floor(Math.random() * ppbar.length)]}`
+            }]})
+        }
+    }
+    if(cmdwithargs === `custompp`){
+        if (!message.content.startsWith(config.prefix)) return
+        if(message.author.id === config.ownerid){
+            message.delete()
+            .then(console.log)
+            .catch(console.error);
+            message.channel.send({embeds:[{
+                color: 'RANDOM',
+                title: `PP Size Calculator`,
+                description: `${message.author}'s pp size\n${args[0]}`
+            }]})
+            .then(console.log)
+            .catch(console.error);
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
             return
         }
     }
     //#endregion
+    //#region (8ball)
+    const eightBall = ['🟩 It is decidedly so.','🟥 My sources say no.','🟩 Signs point to yes.',"🟥 Don't count on it.",'🟩 Outlook good.','🟥 Outlook not so good.','🟩 Yes.','🟨 Reply hazy, try again.','🟩 It is certain.','🟨 Better not tell you now.','🟥 My reply is no.','🟨 Concentrate and ask again.','🟥 Very doubtful.']
+    if(cmdwithargs === `8ball`)
+    if (!args[0]){
+        message.reply(`Uh... What's your question???`)
+        return
+    } else{
+        message.reply(eightBall[Math.floor(Math.random() * eightBall.length)])
+    }
+
     //#endregion
-    //#region (extra general things)
+    //#region (game)
+    const playexit = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('play')
+            .setLabel('Yes')
+            .setStyle('SUCCESS'),
+        new MessageButton()
+            .setCustomId('exit')
+            .setLabel('No')
+            .setStyle('DANGER'),
+    );
+    const moveset1 = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('swallow1')
+            .setLabel('Swallow')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('attack1')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const moveset1point1 = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('swallow1point1')
+            .setLabel('Swallow')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('attack1point1')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const moveset2 = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('drop2')
+            .setLabel('Drop Ability')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('attack2')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const keytron = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('wrong')
+            .setLabel('3')
+            .setStyle('DANGER'),
+        new MessageButton()
+            .setCustomId('wrong2')
+            .setLabel('8')
+            .setStyle('DANGER'),
+        new MessageButton()
+            .setCustomId('correct')
+            .setLabel('5')
+            .setStyle('DANGER'),
+    );
+    const keyyn = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('yesplz')
+            .setLabel('Yes')
+            .setStyle('SUCCESS'),
+        new MessageButton()
+            .setCustomId('nosir')
+            .setLabel('No')
+            .setStyle('DANGER'),
+    );
+    const ultrasword = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('swallowultra')
+            .setLabel('Swallow')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('attackultra')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const ultramoveset = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('cut')
+            .setLabel('Slash')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('fly')
+            .setLabel('Fly Over')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const flyonly = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('fly')
+            .setLabel('Fly Over')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('attackfail')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const yesnohellno = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('yesportal')
+            .setLabel('Fly Over')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('noportal')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+    );
+    
+    let energyspheres = 0;
+    if(message.content.toLowerCase() === `${config.prefix}kirby`){
+        energyspheres = 0
+        const kirby = new MessageEmbed()
+        .setColor('RANDOM')
+        .setTitle("Would you like to play Kirby's Return to Discord?")
+        .setImage("https://upload.wikimedia.org/wikipedia/sco/5/5c/Kirby.png")
+        message.reply({ embeds: [kirby], components: [playexit] });
+    }
+
+    client.on('interactionCreate', async ButtonInteraction => {
+        if(!ButtonInteraction.isButton()) return
+        switch(ButtonInteraction.customId){
+            case 'exit':
+                const goodbyekirby = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("Goodbye!")
+                .setImage("https://snipstock.com/assets/cdn/png/new/97f516522e48846345a6bf37cce4985a.png")
+                await ButtonInteraction.update({ embeds: [goodbyekirby], components: [] })
+                break;
+            case 'play':
+                const kirby1 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("World 1-1")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/b/bf/KSA_Blade_Knight_artwork.png/revision/latest?cb=20180403180249&path-prefix=en')
+                .setDescription("You see a Blade Knight. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [kirby1], components: [moveset1] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'flee':
+                const fled = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You fled! (What a wimp...)")
+                .setImage("https://www.gameclimate.com/wp-content/uploads/2011/08/i_30453.png")
+                await ButtonInteraction.update({ embeds: [fled], components: [] })
+                break;
+            case 'swallow1':
+                const kirby2 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You are now Sword Kirby!")
+                .setImage('https://cdn.wikirby.com/thumb/6/67/KatFL_Waddle_Dee_artwork.png/300px-KatFL_Waddle_Dee_artwork.png')
+                .setDescription("You see a bunch of Waddle Dees. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [kirby2], components: [moveset2] })
+                break;
+            case 'attack1':
+                const kirby1attack = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You killed the blade knight!")
+                .setImage('https://cdn.wikirby.com/thumb/6/67/KatFL_Waddle_Dee_artwork.png/300px-KatFL_Waddle_Dee_artwork.png')
+                .setDescription("You see a bunch of Waddle Dees. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [kirby1attack], components: [moveset1point1] })
+                break;
+            case 'attack1point1':
+                const kirbydeath1point1 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`You tried to attack, but the Waddle Dees overpowered you!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [kirbydeath1point1], components: [] })
+                break;
+            case 'swallow1point1':
+                const kirbeasy = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You swallowed every Waddle Dee! It had no effect.")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/4/4b/TutorialIllustCA01.tpl.png/revision/latest/scale-to-width/360?cb=20180721174224&path-prefix=en')
+                .setDescription("You see a key. Do you grab it?\n")
+                await ButtonInteraction.update({ embeds: [kirbeasy], components: [keyyn] })
+                break;
+            case 'drop2':
+                const kirbydeath2 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`You dropped your Sword ability and the group of Waddle Dees ran over you!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [kirbydeath2], components: [] })
+                break;
+            case 'attack2':
+                const kirbyattack2 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You plowed through the Waddle Dees!")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/4/4b/TutorialIllustCA01.tpl.png/revision/latest/scale-to-width/360?cb=20180721174224&path-prefix=en')
+                .setDescription("You see a key. Do you grab it?\n")
+                await ButtonInteraction.update({ embeds: [kirbyattack2], components: [keyyn] })
+                break;
+            case 'nosir':
+                const ultratime = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("Ok Bozo. You must be scared HAHA!")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
+                .setDescription("You see a Super Blade Knight. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [ultratime], components: [ultrasword] })
+                break;
+            case 'yesplz':
+                const questionizer = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("x√(2(29³)%6) = 10")
+                .setImage('https://pbs.twimg.com/media/E04AjaaWQAIOniS.jpg')
+                .setDescription("Solve for x.\n")
+                await ButtonInteraction.update({ embeds: [questionizer], components: [keytron] })
+                break;
+            case 'correct':
+                energyspheres++
+                const correct = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle(`CORRECT! The answer was 5. You found an Energy Sphere! (Energy Spheres: ${energyspheres})`)
+                .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
+                .setDescription("You see a Super Blade Knight. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [correct], components: [ultrasword] })
+                break;
+            case 'wrong':
+                const wrong = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("INCORRECT! Do you suck at math or something??")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
+                .setDescription("You see a Super Blade Knight. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [wrong], components: [ultrasword] })
+                break;
+            case 'wrong2':
+                const wrongagain = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("INCORRECT! Do you suck at math or something??")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
+                .setDescription("You see a Super Blade Knight. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [wrongagain], components: [ultrasword] })
+                .then(console.log)
+                .catch(console.error);
+                break;
+            case 'swallowultra':
+                const ultrakirby = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You are now **ULTRA SWORD KIRBY!**")
+                .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
+                .setDescription("You encounter a big breakable obstacle and some Waddle Dees. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [ultrakirby], components: [ultramoveset] })
+                break;
+            case 'attackultra':
+                const ultrafail = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You killed the Super Blade Knight.")
+                .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
+                .setDescription("You encounter a big breakable obstacle and some Waddle Dees. What do you do?\n")
+                await ButtonInteraction.update({ embeds: [ultrafail], components: [flyonly] })
+                break;
+            case 'cut':
+                const slashed = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You cut everything in sight!")
+                .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
+                .setDescription("A mysterious, terrifying portal appears. Do you enter it?\n")
+                await ButtonInteraction.update({ embeds: [slashed], components: [yesnohellno] })
+                break;
+            case 'fly':
+                const fliedover = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You cut everything in sight!")
+                .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
+                .setDescription("A mysterious, terrifying portal appears. Do you enter it?\n")
+                await ButtonInteraction.update({ embeds: [fliedover], components: [yesnohellno] })
+                break;
+        }
+    })
+    //#endregion
+    //#region (general commands)
     let totalSeconds = (client.uptime / 1000);
     let hours = Math.floor(totalSeconds / 3600);
     totalSeconds %= 3600;
     let minutes = Math.floor(totalSeconds / 60);
     let seconds = Math.floor(totalSeconds % 60);
     let uptime = `${hours} hours, ${minutes} minutes and ${seconds} seconds`;
+    const aboutme = new MessageEmbed()
+    .setColor('RANDOM') 
+    .setTitle('About FHDBot')
+    .setDescription(`Creator: <@${config.ownerid}>\nUptime: ${uptime}\n[Source Code](https://github.com/anthonyhuang07/FHDBot)\n[Bot Token](https://www.youtube.com/watch?v=oHg5SJYRHA0)`)
+    .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
+    .setFooter({ text: `Made with discord.js v13`, iconURL: `https://i.imgur.com/CLXNXbU.png` });
     switch(command){
-        case `${config.prefix}prefix` || message.content === `<@963533621812158474>`:
-            message.reply(`The prefix is **${config.prefix}**.`)
+        case `${config.prefix}prefix`:
+            message.reply(`The prefix is \`${config.prefix}\`.`)
             break;
         case `${config.prefix}ping`:
-            message.reply(`**Pong!**\nMessage Send Latency: \`${Date.now() - message.createdTimestamp}ms\`\nAPI Latency: \`${Math.round(client.ws.ping)}ms\``)
+            message.reply(`**Pong!** 🏓\nAPI Latency: \`${Math.round(client.ws.ping)}ms\``)
             break;
         case `${config.prefix}about`:
-            message.channel.send({ embeds: [{
-                color: 'RANDOM', 
-                title: 'About FHDBot', 
-                thumbnail: {url: 'https://i.imgur.com/mERBq3H.jpg'}, 
-                description: `Creator: <@${config.ownerid}>\nUptime: ${uptime}\nSource Code: https://github.com/anthonyhuang07/FHDBot\nBot Token: [https://pastebin.com/802j8jbm](https://www.youtube.com/watch?v=oHg5SJYRHA0)`}]})
+            message.channel.send({ embeds: [aboutme] })
             break;
         case `${config.prefix}whoasked`:
             message.channel.send(`Finding Who Asked...`)
-            setTimeout(() => {  message.channel.send(`**Found!** ${message.author} Asked!`); }, 2000);
+            setTimeout(() => {  message.channel.send(`✅ **Found!** ${message.author} Asked!`); }, 2000);
+            break;
+        case `${config.prefix}wh0asked`:
+            message.channel.send(`Finding Who Asked...`)
+            setTimeout(() => {  message.channel.send(`⛔ **ERROR:** Failed to find who asked.`); }, 2000);
+            break;
+        case `${config.prefix}invite`:
+            message.channel.send({embeds: [{
+                color: 'RANDOM', 
+                thumbnail: {url:"https://i.imgur.com/mERBq3H.jpg"},
+                title: 'Invite FHDBot!',
+                description: '[✅ Default Invite](https://discord.com/api/oauth2/authorize?client_id=963533621812158474&permissions=388096&scope=bot)\n[⚠️ Administrator Permisions Invite](https://discord.com/api/oauth2/authorize?client_id=963533621812158474&permissions=8&scope=bot)',
+                timestamp: new Date()
+            }]})
+        case `${config.prefix}snipe`:
+            let deletedmessages = []
+            client.on('messageDelete', (message) => {
+                deletedmessages.slice(0)
+                deletedmessages.push(message.channel.content)
+            })
+            const embed = new MessageEmbed()
+            .setColor('RANDOM')
+            .setTitle(`SNIPED BOZO`)
+            .setDescription(`test ${deletedmessages}`)
+            message.channel.send(embed)
+        case `${config.prefix}time`:
+            let current = new Date();
+            message.channel.send(`Date and Time: \`${current.toLocaleString()}\`\nUnix Timestamp (ms): \`${Date.now()}\``)
     }
     //#endregion
     //#region (other things)
@@ -347,6 +655,41 @@ client.on('messageCreate', (message) => {
             return
         }
     }
+    if(cmdwithargs === `embedsay`){
+        if (!message.content.startsWith(config.prefix)) return
+        if(message.author.id === config.ownerid){
+            message.delete()
+            .then(console.log)
+            .catch(console.error);
+            message.channel.send({embeds: [{color: 'RANDOM', title: stringinput}]})
+            .then(console.log)
+            .catch(console.error);
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
+    }
+    if(cmdwithargs === `nitro`){
+        if(!message.mentions.users.first()) return
+        if(message.author.id === config.ownerid){
+            client.users.fetch(message.mentions.users.first(), false).then((user) => {
+                user.send({embeds: [{
+                    color: '#fc6adf',
+                    title: 'Click Here for Free Discord Nitro! (1 Year)',
+                    url: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
+                    thumbnail: {url:"https://static.wikia.nocookie.net/discord/images/e/ea/Nitro.png/revision/latest?cb=20210105222501"},
+                    description: 'This is your only opportunity. If you pass on this, you will not be gifted this opportunity ever again. Choose carefully.',
+                    timestamp: Date.now()
+                }]});
+            });
+            message.delete()
+            .then(console.log)
+            .catch(console.error)
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
+    }
     //#endregion
 })
-
+//#endregion
