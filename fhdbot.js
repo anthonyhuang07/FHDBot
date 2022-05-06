@@ -36,7 +36,7 @@ client.on('messageCreate', (message) => {
             { name: 'General', value: 
             `- Prefix \`(${config.prefix}prefix)\`\n- Message Send & API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
             { name: 'Fun', value: 
-            `- Copypastas \`(${config.prefix}copypasta)\`\n- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- Random Video (Under 2 Minutes) \`(${config.prefix}video)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Kirby's Return to Discord \`(${config.prefix}kirby)\` (UNFINISHED)`}
+            `- Copypastas \`(${config.prefix}copypasta)\`\n- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- Random Video (Under 2 Minutes) \`(${config.prefix}video)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Kirby's Return to Discord \`(${config.prefix}kirby)\``}
         )
         .setTimestamp()
         .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
@@ -342,16 +342,16 @@ client.on('messageCreate', (message) => {
     const keytron = new MessageActionRow()
     .addComponents(
         new MessageButton()
+            .setCustomId('correct')
+            .setLabel('6')
+            .setStyle('DANGER'),
+        new MessageButton()
             .setCustomId('wrong')
             .setLabel('3')
             .setStyle('DANGER'),
         new MessageButton()
             .setCustomId('wrong2')
             .setLabel('8')
-            .setStyle('DANGER'),
-        new MessageButton()
-            .setCustomId('correct')
-            .setLabel('5')
             .setStyle('DANGER'),
     );
     const keyyn = new MessageActionRow()
@@ -383,12 +383,12 @@ client.on('messageCreate', (message) => {
     const ultramoveset = new MessageActionRow()
     .addComponents(
         new MessageButton()
-            .setCustomId('cut')
-            .setLabel('Slash')
-            .setStyle('PRIMARY'),
-        new MessageButton()
             .setCustomId('fly')
             .setLabel('Fly Over')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('cut')
+            .setLabel('Slash')
             .setStyle('PRIMARY'),
         new MessageButton()
             .setCustomId('flee')
@@ -414,20 +414,96 @@ client.on('messageCreate', (message) => {
     .addComponents(
         new MessageButton()
             .setCustomId('yesportal')
-            .setLabel('Fly Over')
-            .setStyle('PRIMARY'),
+            .setLabel('Yes')
+            .setStyle('DANGER'),
         new MessageButton()
             .setCustomId('noportal')
+            .setLabel('No')
+            .setStyle('DANGER'),
+    );
+    const portalentered = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('correct2')
+            .setLabel('😁')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('wrong21')
+            .setLabel('😆')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('wrong22')
+            .setLabel('😀')
+            .setStyle('PRIMARY'),
+    );
+    const mikeyn = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('yesmike')
+            .setLabel('Yes')
+            .setStyle('SUCCESS'),
+        new MessageButton()
+            .setCustomId('nomike')
+            .setLabel('No')
+            .setStyle('DANGER'),
+    );
+    const bossnoweapon = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('attacknoweapon')
             .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const bossfight = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('dodge')
+            .setLabel('Dodge')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('attackmike')
+            .setLabel('Attack')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('flee')
+            .setLabel('Flee')
+            .setStyle('DANGER'),
+    );
+    const gg = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('goalgame')
+            .setLabel('Yay!')
+            .setStyle('SUCCESS'),
+    );
+    const finalquestion = new MessageActionRow()
+    .addComponents(
+        new MessageButton()
+            .setCustomId('intel')
+            .setLabel('Intel')
+            .setStyle('PRIMARY'),
+        new MessageButton()
+            .setCustomId('amd')
+            .setLabel('AMD')
             .setStyle('PRIMARY'),
     );
     
     let energyspheres = 0;
+    let playingstatus = false;
     if(message.content.toLowerCase() === `${config.prefix}kirby`){
+        if(playingstatus === true){
+            message.reply('Someone else is already playing! Please wait until their session is over.')
+            return
+        }
         energyspheres = 0
         const kirby = new MessageEmbed()
         .setColor('RANDOM')
         .setTitle("Would you like to play Kirby's Return to Discord?")
+        .setDescription("Note: Avoid playing with multiple people playing at once.")
         .setImage("https://upload.wikimedia.org/wikipedia/sco/5/5c/Kirby.png")
         message.reply({ embeds: [kirby], components: [playexit] });
     }
@@ -436,13 +512,17 @@ client.on('messageCreate', (message) => {
         if(!ButtonInteraction.isButton()) return
         switch(ButtonInteraction.customId){
             case 'exit':
+                playingstatus = false
                 const goodbyekirby = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle("Goodbye!")
                 .setImage("https://snipstock.com/assets/cdn/png/new/97f516522e48846345a6bf37cce4985a.png")
                 await ButtonInteraction.update({ embeds: [goodbyekirby], components: [] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'play':
+                playingstatus = true
                 const kirby1 = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle("World 1-1")
@@ -453,11 +533,14 @@ client.on('messageCreate', (message) => {
                 .catch(console.error)
                 break;
             case 'flee':
+                playingstatus = false
                 const fled = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle("You fled! (What a wimp...)")
                 .setImage("https://www.gameclimate.com/wp-content/uploads/2011/08/i_30453.png")
                 await ButtonInteraction.update({ embeds: [fled], components: [] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'swallow1':
                 const kirby2 = new MessageEmbed()
@@ -466,6 +549,8 @@ client.on('messageCreate', (message) => {
                 .setImage('https://cdn.wikirby.com/thumb/6/67/KatFL_Waddle_Dee_artwork.png/300px-KatFL_Waddle_Dee_artwork.png')
                 .setDescription("You see a bunch of Waddle Dees. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [kirby2], components: [moveset2] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'attack1':
                 const kirby1attack = new MessageEmbed()
@@ -474,14 +559,19 @@ client.on('messageCreate', (message) => {
                 .setImage('https://cdn.wikirby.com/thumb/6/67/KatFL_Waddle_Dee_artwork.png/300px-KatFL_Waddle_Dee_artwork.png')
                 .setDescription("You see a bunch of Waddle Dees. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [kirby1attack], components: [moveset1point1] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'attack1point1':
+                playingstatus = false
                 const kirbydeath1point1 = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle("You Died!")
                 .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
                 .setDescription(`You tried to attack, but the Waddle Dees overpowered you!\n\nType ${config.prefix}kirby to restart the game!`)
                 await ButtonInteraction.update({ embeds: [kirbydeath1point1], components: [] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'swallow1point1':
                 const kirbeasy = new MessageEmbed()
@@ -490,14 +580,19 @@ client.on('messageCreate', (message) => {
                 .setImage('https://static.wikia.nocookie.net/kirby/images/4/4b/TutorialIllustCA01.tpl.png/revision/latest/scale-to-width/360?cb=20180721174224&path-prefix=en')
                 .setDescription("You see a key. Do you grab it?\n")
                 await ButtonInteraction.update({ embeds: [kirbeasy], components: [keyyn] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'drop2':
+                playingstatus = false
                 const kirbydeath2 = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle("You Died!")
                 .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
                 .setDescription(`You dropped your Sword ability and the group of Waddle Dees ran over you!\n\nType ${config.prefix}kirby to restart the game!`)
                 await ButtonInteraction.update({ embeds: [kirbydeath2], components: [] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'attack2':
                 const kirbyattack2 = new MessageEmbed()
@@ -506,6 +601,8 @@ client.on('messageCreate', (message) => {
                 .setImage('https://static.wikia.nocookie.net/kirby/images/4/4b/TutorialIllustCA01.tpl.png/revision/latest/scale-to-width/360?cb=20180721174224&path-prefix=en')
                 .setDescription("You see a key. Do you grab it?\n")
                 await ButtonInteraction.update({ embeds: [kirbyattack2], components: [keyyn] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'nosir':
                 const ultratime = new MessageEmbed()
@@ -514,23 +611,29 @@ client.on('messageCreate', (message) => {
                 .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
                 .setDescription("You see a Super Blade Knight. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [ultratime], components: [ultrasword] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'yesplz':
                 const questionizer = new MessageEmbed()
                 .setColor('RANDOM')
-                .setTitle("x√(2(29³)%6) = 10")
+                .setTitle("5√(2(29³)%x) = 10")
                 .setImage('https://pbs.twimg.com/media/E04AjaaWQAIOniS.jpg')
                 .setDescription("Solve for x.\n")
                 await ButtonInteraction.update({ embeds: [questionizer], components: [keytron] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'correct':
                 energyspheres++
                 const correct = new MessageEmbed()
                 .setColor('RANDOM')
-                .setTitle(`CORRECT! The answer was 5. You found an Energy Sphere! (Energy Spheres: ${energyspheres})`)
+                .setTitle(`CORRECT! The answer was 6. You found an Energy Sphere! (Energy Spheres: ${energyspheres})`)
                 .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
                 .setDescription("You see a Super Blade Knight. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [correct], components: [ultrasword] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'wrong':
                 const wrong = new MessageEmbed()
@@ -539,6 +642,8 @@ client.on('messageCreate', (message) => {
                 .setImage('https://static.wikia.nocookie.net/kirby/images/f/f3/Tempgyazo.png/revision/latest/top-crop/width/360/height/360?cb=20111102032329&path-prefix=en')
                 .setDescription("You see a Super Blade Knight. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [wrong], components: [ultrasword] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'wrong2':
                 const wrongagain = new MessageEmbed()
@@ -557,6 +662,8 @@ client.on('messageCreate', (message) => {
                 .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
                 .setDescription("You encounter a big breakable obstacle and some Waddle Dees. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [ultrakirby], components: [ultramoveset] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'attackultra':
                 const ultrafail = new MessageEmbed()
@@ -565,22 +672,176 @@ client.on('messageCreate', (message) => {
                 .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
                 .setDescription("You encounter a big breakable obstacle and some Waddle Dees. What do you do?\n")
                 await ButtonInteraction.update({ embeds: [ultrafail], components: [flyonly] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'attackfail':
+                playingstatus = false
+                const kirbydeathfail = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`You tried to attack, but you got cornered by all the Waddle Dees, thanks to the obstacle!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [kirbydeathfail], components: [] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'cut':
                 const slashed = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle("You cut everything in sight!")
-                .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
+                .setImage('https://static.wikia.nocookie.net/wii/images/7/7b/KRtDL_Star_Portal.png/revision/latest?cb=20140413204625')
                 .setDescription("A mysterious, terrifying portal appears. Do you enter it?\n")
                 await ButtonInteraction.update({ embeds: [slashed], components: [yesnohellno] })
+                .then(console.log)
+                .catch(console.error)
                 break;
             case 'fly':
                 const fliedover = new MessageEmbed()
                 .setColor('RANDOM')
-                .setTitle("You cut everything in sight!")
-                .setImage('https://i1.sndcdn.com/artworks-000237791270-fqm7sh-t500x500.jpg')
-                .setDescription("A mysterious, terrifying portal appears. Do you enter it?\n")
-                await ButtonInteraction.update({ embeds: [fliedover], components: [yesnohellno] })
+                .setTitle("You flew over the obstacles.")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/9/9a/KRtDL_Door_sprite_3.png/revision/latest/scale-to-width-down/250?cb=20210311200733&path-prefix=en')
+                .setDescription("You have reached the end! Congrats!\n")
+                await ButtonInteraction.update({ embeds: [fliedover], components: [gg] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'noportal':
+                const ignore = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You ignored the portal.")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/9/9a/KRtDL_Door_sprite_3.png/revision/latest/scale-to-width-down/250?cb=20210311200733&path-prefix=en')
+                .setDescription("You have reached the end! Congrats!\n")
+                await ButtonInteraction.update({ embeds: [ignore], components: [gg] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'yesportal':
+                const enter = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You entered the portal and your ability is gone!")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/3/3f/KRtDL_Dimensional_Rift_13.PNG/revision/latest?cb=20161024173730&path-prefix=en')
+                .setDescription("Click the emoji without the word Grinning!\n")
+                await ButtonInteraction.update({ embeds: [enter], components: [portalentered] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'wrong21':
+                playingstatus = false
+                const wrongagain2 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`You got the wrong answer and the purple layer crushed you!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [wrongagain2], components: [] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'wrong22':
+                playingstatus = false
+                const wrongagain22 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`You got the wrong answer and the purple layer crushed you!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [wrongagain22], components: [] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'correct2':
+                const correctus = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You're correct!")
+                .setImage('https://cdn.wikirby.com/c/c2/KRtDL_Mike_Icon.png')
+                .setDescription("You see a Mike Kirby Copy Essence. Do you take it?\n")
+                await ButtonInteraction.update({ embeds: [correctus], components: [mikeyn] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'nomike':
+                const bruhbozo = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You didn't take the Copy Ability!")
+                .setImage('https://i.ytimg.com/vi/LXCDeg29Uq4/maxresdefault.jpg')
+                .setDescription("BOSSFIGHT! Sphere Doomer - What do you do?\n")
+                await ButtonInteraction.update({ embeds: [bruhbozo], components: [bossnoweapon] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'attacknoweapon':
+                playingstatus = false
+                const goodjob = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`The Sphere Doomer exploded the entire map!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [goodjob], components: [] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'yesmike':
+                const ayy = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You are now Mike Kirby!")
+                .setImage('https://i.ytimg.com/vi/LXCDeg29Uq4/maxresdefault.jpg')
+                .setDescription("BOSSFIGHT! Sphere Doomer - What do you do?\n")
+                await ButtonInteraction.update({ embeds: [ayy], components: [bossfight] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'dodge':
+                playingstatus = false
+                const goodjob2 = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You Died!")
+                .setImage('https://i.ytimg.com/vi/-G-AuLXhTN4/mqdefault.jpg')
+                .setDescription(`Dodging was no use - the Sphere Doomer exploded the entire map!\n\nType ${config.prefix}kirby to restart the game!`)
+                await ButtonInteraction.update({ embeds: [goodjob2], components: [] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'attackmike':
+                energyspheres += 2
+                const beaten = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("Your voice shredded the Sphere Doomer to pieces!")
+                .setImage('https://static.wikia.nocookie.net/kirby/images/9/9a/KRtDL_Door_sprite_3.png/revision/latest/scale-to-width-down/250?cb=20210311200733&path-prefix=en')
+                .setDescription(`You found 2 Energy Spheres! (Energy Spheres: ${energyspheres})\nYou have exited the Dimensional Rift, and have reached the finish!\n`)
+                await ButtonInteraction.update({ embeds: [beaten], components: [gg] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'goalgame':
+                const golgame = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("Goal Game!")
+                .setImage('https://i.ytimg.com/vi/p1pY7B3k924/maxresdefault.jpg')
+                .setDescription(`Which is the superior CPU Brand?\n`)
+                await ButtonInteraction.update({ embeds: [golgame], components: [finalquestion] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'intel':
+                playingstatus = false
+                const endingbad = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("You idiot! You landed on Platform 7!")
+                .setImage('https://c.tenor.com/XbfcpBquW5oAAAAM/kirby-kirby-dance.gif')
+                .setDescription(`CONGRATS! You beat the level!\n\n**Statistics:**\nLevel: Complete!\nEnergy Spheres: ${energyspheres}/3\nGoal Game: Platform 7 👎`)
+                await ButtonInteraction.update({ embeds: [endingbad], components: [] })
+                .then(console.log)
+                .catch(console.error)
+                break;
+            case 'amd':
+                playingstatus = false
+                const endinggood = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle("Good Job! You landed on Platform 1!")
+                .setImage('https://c.tenor.com/XbfcpBquW5oAAAAM/kirby-kirby-dance.gif')
+                .setDescription(`CONGRATS! You beat the level!\n\n**Statistics:**\nLevel: Complete!\nEnergy Spheres: ${energyspheres}/3\nGoal Game: Platform 1 👍`)
+                await ButtonInteraction.update({ embeds: [endinggood], components: [] })
+                .then(console.log)
+                .catch(console.error)
                 break;
         }
     })
@@ -670,9 +931,9 @@ client.on('messageCreate', (message) => {
         }
     }
     if(cmdwithargs === `nitro`){
-        if(!message.mentions.users.first()) return
+        if(args[0].length < 10) return
         if(message.author.id === config.ownerid){
-            client.users.fetch(message.mentions.users.first(), false).then((user) => {
+            client.users.fetch(`${args[0]}`, false).then((user) => {
                 user.send({embeds: [{
                     color: '#fc6adf',
                     title: 'Click Here for Free Discord Nitro! (1 Year)',
