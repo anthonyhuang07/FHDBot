@@ -14,8 +14,13 @@
   "author": "FHDHGNGN",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/voice": "^0.9.0",
+    "discord-math": "^1.0.5",
     "discord.js": "^13.6.0",
+    "distube": "^3.3.4",
     "dotenv": "^16.0.0",
+    "ffmpeg": "^0.0.4",
+    "libsodium-wrappers": "^0.7.10",
     "quick.db": "^7.1.3"
   }
 }

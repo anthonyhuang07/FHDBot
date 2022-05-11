@@ -1,8 +1,11 @@
 //#region (startup and variables)
 require('dotenv').config()
-const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction, MessageAttachment } = require('discord.js');
+const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction, MessageAttachment, VoiceChannel } = require('discord.js');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, entersState, StreamType, AudioPlayerStatus, VoiceConnectionStatus } = require('@discordjs/voice');
+const player = createAudioPlayer();
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const config = require("./config.json");
+const math = require('discord-math');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
     console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
@@ -34,9 +37,9 @@ client.on('messageCreate', (message) => {
         .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
         .addFields(
             { name: 'General', value: 
-            `- Prefix \`(${config.prefix}prefix)\`\n- Message Send & API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
+            `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\`\n- 2 Value Calculator \`(${config.prefix}calc <num1> <operator> <num2>)\``},
             { name: 'Fun', value: 
-            `- Copypastas \`(${config.prefix}copypasta)\`\n- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- Random Video (Under 2 Minutes) \`(${config.prefix}video)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Kirby's Return to Discord \`(${config.prefix}kirby)\``}
+            `- Copypastas \`(${config.prefix}copypasta)\`\n- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Kirby's Return to Discord \`(${config.prefix}kirby)\``}
         )
         .setTimestamp()
         .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
@@ -54,7 +57,7 @@ client.on('messageCreate', (message) => {
             .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
             .addFields(
                 { name: 'General', value: 
-                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\``},
+                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\`\n- Join Current VC \`(${config.prefix}join)\``},
                 { name: 'Fun', value: 
                 `- Custom PP Size \`(${config.prefix}custompp <args>)\`\n- Free Nitro \`(${config.prefix}nitro <@user>)\``}
             )
@@ -74,25 +77,22 @@ client.on('messageCreate', (message) => {
         .setTitle('Copypastas')
         .setDescription(`A list of Copypastas to use.`)
         .addFields(
-            { name: 'Copypastas:', value: `- Stop Posting About Among Us \`(${config.prefix}copypasta amogus)\`\n- Aditya \`(${config.prefix}copypasta aditya)\`\n- The Letter A \`(${config.prefix}copypasta a)\`\n- MEE6 Death \`(${config.prefix}copypasta mee6)\``}
+            { name: 'Copypastas:', value: `- Stop Posting About Among Us \`(${config.prefix}copypasta amogus)\`\n- The Letter A \`(${config.prefix}copypasta a)\`\n- MEE6 Death \`(${config.prefix}copypasta mee6)\``}
         )
         message.reply({embeds: [copypastaHelp]});
     }
 
     //#endregion
     //#region (copypastas)
-    const copypastas = [`${config.prefix}copypasta amogus`,`${config.prefix}copypasta aditya`,`${config.prefix}copypasta a`,`${config.prefix}copypasta mee6`]
+    const copypastas = [`${config.prefix}copypasta amogus`,`${config.prefix}copypasta a`,`${config.prefix}copypasta mee6`]
     switch(command){    
         case copypastas[0]:
             message.channel.send(`STOP POSTING ABOUT AMONG US! I'M TIRED OF SEEING IT! MY FRIENDS ON TIKTOK SEND ME MEMES, ON DISCORD IT'S FUCKING MEMES! I was in a server, right? and ALL OF THE CHANNELS were just among us stuff. I-I showed my champion underwear to my girlfriend and t-the logo I flipped it and I said "hey babe, when the underwear is sus HAHA DING DING DING DING DING DING DING DI DI DING" I fucking looked at a trashcan and said "THAT'S A BIT SUSSY" I looked at my penis I think of an astronauts helmet and I go "PENIS? MORE LIKE PENSUS" AAAAAAAAAAAAAAHGESFG`)
             break;
         case copypastas[1]:
-            message.channel.send(`1) are you stupid? (not really a question)\n2) I wasn't asking just you, noone cares about you i just put it there cause its funny\n3) Your not cool by saying "L+bozo+ratio..." so shut up\n4) Because you act like a idiot thinking oh ok hes just talking to me and not the other 40+(or smth) in the server\n5) Noone cares, you are not smart by correcting\n6) You are not smart by trying to correct someone\n7) how stupid are you? if you are going to do a copypasta atleast number it correct`)
-            break;
-        case copypastas[2]:
             message.channel.send(`You thought you just did something there didn't you? Well sorry to burst your bubble, but numerous sentences could be constructed without the use of the first letter of the English lexicon.`)
             break;
-        case copypastas[3]:
+        case copypastas[2]:
             message.channel.send(`<@159985870458322944>, I will disassemble your molecular structure and combust your atoms, but not before i rip you from limb to limb, snap your fingers like a kitkat, and incinerate your organs.  I will pour sodium hydroxide into your veins and feed your leg muscles into a meat grinder. To finish it off, I will throw your hair to the rats in my attic and let your nits and dandruff decompose.`);
     }
     //#endregion
@@ -187,48 +187,6 @@ client.on('messageCreate', (message) => {
         }]})
         .then(console.log)
         .catch(console.error);
-    }
-    //#endregion
-    //#region (random video)
-    const videos = [
-        'https://www.youtube.com/watch?v=PZ_d2O5ZT2c', 
-        'https://www.youtube.com/watch?v=-Lud_GLfwR8',
-        'https://www.youtube.com/watch?v=mJLTvxUhlqo',
-        'https://www.youtube.com/watch?v=ZBDRIy4X2sU',
-        'https://www.youtube.com/watch?v=dce3bWOkXTA',
-        'https://www.youtube.com/watch?v=4ouXNzRkh40',
-        'https://www.youtube.com/watch?v=3P3GVnN70u0',
-        'https://www.youtube.com/watch?v=0XmglBlOhUw',
-        'https://www.youtube.com/watch?v=uRiGdl_fD28',
-        'https://www.youtube.com/watch?v=GvhkSw-ppA0',
-        'https://www.youtube.com/watch?v=OD8HS7kC_oo',
-        'https://www.youtube.com/watch?v=T6_0o4MU6Pw',
-        'https://www.youtube.com/watch?v=Mly-ptUD7M8',
-        'https://www.youtube.com/watch?v=u25WXLlZGAQ',
-        'https://www.youtube.com/watch?v=ZIF_c0e22Bw',
-        'https://www.youtube.com/watch?v=w_dbFNWD910',
-        'https://www.youtube.com/watch?v=Nrk8sqZfsgI',
-        'https://www.youtube.com/watch?v=0PDOub2hUvM',
-        'https://www.youtube.com/watch?v=3oBdfIHXcyM',
-        'https://www.youtube.com/watch?v=5RzHEQlS5_M',
-        'https://www.youtube.com/watch?v=Cm8k5h12VnI',
-        'https://www.youtube.com/watch?v=3Uk6-iiVb0Y',
-        'https://www.youtube.com/watch?v=r3NHXbM9HH8',
-        'https://www.youtube.com/watch?v=rJxl5mWWmGU',
-        'https://www.youtube.com/watch?v=GEhEUy85PsY',
-        'https://www.youtube.com/watch?v=e1E9PysyEXU',
-        'https://www.youtube.com/watch?v=oYoZj87CdTg',
-        'https://www.youtube.com/watch?v=jSD3vrR2HxI',
-        'https://www.youtube.com/watch?v=XbqT2pLEl_8',
-        'https://www.youtube.com/watch?v=srAg1j3tVfI',
-        'https://www.youtube.com/watch?v=2VC9xHCNf-I',
-        'https://www.youtube.com/watch?v=8sNekrl9x9g',
-        'https://www.youtube.com/watch?v=LNL6t-Eu-IY',
-        'https://www.youtube.com/watch?v=ROm4SMaEOLY',
-        'https://www.youtube.com/watch?v=RD_5Kdjvz4Q',
-    ];
-    if(command === `${config.prefix}video`){
-        message.channel.send(videos[Math.floor(Math.random() * videos.length)])
     }
     //#endregion
     //#region (pp size)
@@ -522,6 +480,7 @@ client.on('messageCreate', (message) => {
                 .catch(console.error)
                 break;
             case 'play':
+                energyspheres = 0
                 playingstatus = true
                 const kirby1 = new MessageEmbed()
                 .setColor('RANDOM')
@@ -885,67 +844,110 @@ client.on('messageCreate', (message) => {
                 description: '[✅ Default Invite](https://discord.com/api/oauth2/authorize?client_id=963533621812158474&permissions=388096&scope=bot)\n[⚠️ Administrator Permisions Invite](https://discord.com/api/oauth2/authorize?client_id=963533621812158474&permissions=8&scope=bot)',
                 timestamp: new Date()
             }]})
-        case `${config.prefix}snipe`:
-            let deletedmessages = []
-            client.on('messageDelete', (message) => {
-                deletedmessages.slice(0)
-                deletedmessages.push(message.channel.content)
-            })
-            const embed = new MessageEmbed()
-            .setColor('RANDOM')
-            .setTitle(`SNIPED BOZO`)
-            .setDescription(`test ${deletedmessages}`)
-            message.channel.send(embed)
+            break;
         case `${config.prefix}time`:
             let current = new Date();
             message.channel.send(`Date and Time: \`${current.toLocaleString()}\`\nUnix Timestamp (ms): \`${Date.now()}\``)
+            break;
+    }
+    if(cmdwithargs === `calc`){
+        let num1 = Number(args[0]);
+        let operation = args[1];
+        let num2 = Number(args[2]);
+        let operation2 = args[3];
+        let num3 = Number(args[4]);
+        let operation3 = args[5];
+        let num4 = args[6];
+        if(operation3){
+            if (!num4) return message.channel.send('Num4 needs to be specified!');
+            message.channel.send(`**Question:** \`${num1} ${operation} ${num2} ${operation2} ${num3} ${operation3} ${num4}\`\n**Answer:** \`${math.calculate(num1, operation, num2, operation2, num3, operation3, num4)}\``);
+        } else if(operation2){
+            if (!num3) return message.channel.send('Num3 needs to be specified!');
+            message.channel.send(`**Question:** \`${num1} ${operation} ${num2} ${operation2} ${num3}\`\n**Answer:** \`${math.calculate(num1, operation, num2, operation2, num3)}\``);
+        } else if(operation){
+            if (!num1) return message.channel.send('Num1 needs to be specified!');
+            if (!operation) return message.channel.send('An operation was not specified!');
+            if (!num2) return message.channel.send('Num2 needs to be specified!');
+            message.channel.send(`**Question:** \`${num1} ${operation} ${num2}\`\n**Answer:** \`${math.calculate(num1, operation, num2)}\``);
+        } else{
+            return
+        }
     }
     //#endregion
-    //#region (other things)
-    if(cmdwithargs === `say`){
-        if (!message.content.startsWith(config.prefix)) return
-        if(message.author.id === config.ownerid){
-            message.delete()
-            .then(console.log)
-            .catch(console.error);
-            message.channel.send(stringinput)
-            .then(console.log)
-            .catch(console.error);
-        } else{
-            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
-            return
-        }
+    //#region (owner cmds)
+    switch(cmdwithargs){
+        case `ban`:
+            if (!message.content.startsWith(config.prefix)) return
+            if(message.author.id === config.ownerid){
+                let member = message.mentions.members.first();
+                if(!member) return
+                member.ban().then((member) => {
+                    message.delete()
+                }).catch(() => {
+                    message.channel.send("I do not have permissions to do this!");
+                });
+            } else{
+                message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+                return
+            }
+            break;
+        case `nitro`:
+            if(args[0].length < 10) return
+            if(message.author.id === config.ownerid){
+                client.users.fetch(`${args[0]}`, false).then((user) => {
+                    user.send({embeds: [{
+                        color: '#fc6adf',
+                        title: 'Click Here for Free Discord Nitro! (1 Year)',
+                        url: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
+                        thumbnail: {url:"https://static.wikia.nocookie.net/discord/images/e/ea/Nitro.png/revision/latest?cb=20210105222501"},
+                        description: 'This is your only opportunity. If you pass on this, you will not be gifted this opportunity ever again. Choose carefully.',
+                        timestamp: Date.now()
+                    }]});
+                });
+                message.delete()
+                .then(console.log)
+                .catch(console.error)
+            } else{
+                message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+                return
+            }
+            break;
+        case `say`:
+            if (!message.content.startsWith(config.prefix)) return
+            if(message.author.id === config.ownerid){
+                message.delete()
+                .then(console.log)
+                .catch(console.error);
+                message.channel.send(stringinput)
+                .then(console.log)
+                .catch(console.error);
+            } else{
+                message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+                return
+            }
+            break;
+        case `embedsay`:
+            if (!message.content.startsWith(config.prefix)) return
+            if(message.author.id === config.ownerid){
+                message.delete()
+                .then(console.log)
+                .catch(console.error);
+                message.channel.send({embeds: [{color: 'RANDOM', title: stringinput}]})
+                .then(console.log)
+                .catch(console.error);
+            } else{
+                message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+                return
+            }
+            break;
     }
-    if(cmdwithargs === `embedsay`){
-        if (!message.content.startsWith(config.prefix)) return
+    if(command === `${config.prefix}join`){
         if(message.author.id === config.ownerid){
-            message.delete()
-            .then(console.log)
-            .catch(console.error);
-            message.channel.send({embeds: [{color: 'RANDOM', title: stringinput}]})
-            .then(console.log)
-            .catch(console.error);
-        } else{
-            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
-            return
-        }
-    }
-    if(cmdwithargs === `nitro`){
-        if(args[0].length < 10) return
-        if(message.author.id === config.ownerid){
-            client.users.fetch(`${args[0]}`, false).then((user) => {
-                user.send({embeds: [{
-                    color: '#fc6adf',
-                    title: 'Click Here for Free Discord Nitro! (1 Year)',
-                    url: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
-                    thumbnail: {url:"https://static.wikia.nocookie.net/discord/images/e/ea/Nitro.png/revision/latest?cb=20210105222501"},
-                    description: 'This is your only opportunity. If you pass on this, you will not be gifted this opportunity ever again. Choose carefully.',
-                    timestamp: Date.now()
-                }]});
-            });
-            message.delete()
-            .then(console.log)
-            .catch(console.error)
+            joinVoiceChannel({
+                channelId: message.member.voice.channel.id,
+                guildId: message.guild.id,
+                adapterCreator: message.guild.voiceAdapterCreator
+            })
         } else{
             message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
             return
