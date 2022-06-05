@@ -2,14 +2,13 @@
 require('dotenv').config()
 const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction, MessageAttachment, VoiceChannel } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, entersState, StreamType, AudioPlayerStatus, VoiceConnectionStatus } = require('@discordjs/voice');
-const player = createAudioPlayer();
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const config = require("./config.json");
 const math = require('discord-math');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
-    console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
-    client.user.setActivity(`can pooper MUKBANG`, { type: 'STREAMING', url: "https://www.twitch.tv/fhdhgngn" })
+    console.log(`\x1B[32;1m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33;1m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[0m\x1B[33m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[31m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[35m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[36m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
+    client.user.setActivity(`breaking bad MUKBANG`, { type: 'STREAMING', url: "https://www.twitch.tv/fhdhgngn" })
 })
 //#endregion
 //#region (bot invited)
@@ -107,28 +106,6 @@ client.on('messageCreate', (message) => {
         return total;
     }
     let percentage = shipcharcode(ship)%101
-    const towny = ['Tony','tony','Toeknee','toeknee','despotato#7521','TOEKNEE','TONY','Towny','towny','<@776445269155643392>']
-    const kasuh = ['Cassia','cassia','KaseUH','kaseuh','boyo#6859','KASEUH','CASSIA','UwU','Chair','Nobody','KasUH','kasuh','Kasuh','nobody','chair','<@767861703303626783>']
-    const stuffs = ['Everyone','Mia','mia','Smart','Tall','tall']
-    for(let i = 0; i < towny.length; i++){
-        if (args[0] === towny[i] || args[1] === towny[i]){
-            for(let j = 0; j < kasuh.length; j++){
-                if (args[0] === kasuh[j] || args[1] === kasuh[j]){
-                    percentage = 100;
-                    break;
-                }
-            }
-        }
-    } for(let i = 0; i < towny.length; i++){
-        if (args[0] === towny[i] || args[1] === towny[i]){
-            for(let j = 0; j < stuffs.length; j++){
-                if (args[0] === stuffs[j] || args[1] === stuffs[j]){
-                    percentage = 0;
-                    break;
-                }
-            }
-        }
-    }
     let opinion;
     let bar;
     const full = '<:full:970688329936928788>'
@@ -192,10 +169,6 @@ client.on('messageCreate', (message) => {
     //#region (pp size)
     const ppbar = ['You have no PP 🙁','8D','8=D','8==D','8===D','8====D','8=====D','8======D','8=======D','8========D','8=========D','8==========D','8===========D','8============D','8=============D','8==============D','8===============D','8================D','8=================D','8==================D','8===================D','8====================D']
     if(command.startsWith(`${config.prefix}pp`)){
-        if(message.author.id === '562859377816633372'){
-            message.channel.send(`Sorry, but you don't have a PP!`);
-            return
-        }
         if(!message.mentions.members.size){
             message.channel.send({embeds:[{
                 color: 'RANDOM',
@@ -850,31 +823,39 @@ client.on('messageCreate', (message) => {
             message.channel.send(`Date and Time: \`${current.toLocaleString()}\`\nUnix Timestamp (ms): \`${Date.now()}\``)
             break;
     }
-    if(cmdwithargs === `calc`){
-        let num1 = Number(args[0]);
-        let operation = args[1];
-        let num2 = Number(args[2]);
-        let operation2 = args[3];
-        let num3 = Number(args[4]);
-        let operation3 = args[5];
-        let num4 = args[6];
-        if(operation3){
-            if (!num4) return message.channel.send('Num4 needs to be specified!');
-            message.channel.send(`**Question:** \`${num1} ${operation} ${num2} ${operation2} ${num3} ${operation3} ${num4}\`\n**Answer:** \`${math.calculate(num1, operation, num2, operation2, num3, operation3, num4)}\``);
-        } else if(operation2){
-            if (!num3) return message.channel.send('Num3 needs to be specified!');
-            message.channel.send(`**Question:** \`${num1} ${operation} ${num2} ${operation2} ${num3}\`\n**Answer:** \`${math.calculate(num1, operation, num2, operation2, num3)}\``);
-        } else if(operation){
-            if (!num1) return message.channel.send('Num1 needs to be specified!');
-            if (!operation) return message.channel.send('An operation was not specified!');
-            if (!num2) return message.channel.send('Num2 needs to be specified!');
-            message.channel.send(`**Question:** \`${num1} ${operation} ${num2}\`\n**Answer:** \`${math.calculate(num1, operation, num2)}\``);
-        } else{
-            return
-        }
+    switch(cmdwithargs){
+        case `calc`:
+            let num1 = Number(args[0]);
+            let operation = args[1];
+            let num2 = Number(args[2]);
+            if(operation){
+                if (!num1) return message.channel.send('Num1 needs to be specified!');
+                if (!operation) return message.channel.send('An operation was not specified!');
+                if (!num2) return message.channel.send('Num2 needs to be specified!');
+                message.channel.send(`**Question:** \`${num1} ${operation} ${num2}\`\n**Answer:** \`${math.calculate(num1, operation, num2)}\``);
+            } else{
+                return
+            }
+            break;
     }
     //#endregion
     //#region (owner cmds)
+    let thing = true;
+    if(command === `${config.prefix}join`){
+        if(message.author.id === config.ownerid){
+            joinVoiceChannel({
+                channelId: message.member.voice.channel.id,
+                guildId: message.guild.id,
+                adapterCreator: message.guild.voiceAdapterCreator
+            })
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
+    } else if(command === `${config.prefix}nitrostop`){
+        thing = false;
+        console.log("ACTIVATED!" + thing)
+    }
     switch(cmdwithargs){
         case `ban`:
             if (!message.content.startsWith(config.prefix)) return
@@ -893,20 +874,41 @@ client.on('messageCreate', (message) => {
             break;
         case `nitro`:
             if(args[0].length < 10) return
+            if(message.author.id === config.ownerid || message.author.id === "963533621812158474"){
+                try{
+                    client.users.fetch(`${args[0]}`, false).then((user) => {
+                        user.send({embeds: [{
+                            color: '#fc6adf',
+                            title: 'Click Here for Free Discord Nitro! (1 Year)',
+                            url: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
+                            thumbnail: {url:"https://static.wikia.nocookie.net/discord/images/e/ea/Nitro.png/revision/latest?cb=20210105222501"},
+                            description: 'This is your only opportunity. If you pass on this, you will not be gifted this opportunity ever again. Choose carefully.',
+                            timestamp: Date.now()
+                        }]}).then(console.log).catch(console.error);
+                    });
+                    message.delete().then(console.log).catch(console.error);
+                } catch (error){
+                    console.error();
+                }
+            } else{
+                message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+                return
+            }
+            break;
+        case `nitrospam`:
+            if(args[0].length < 10) return
             if(message.author.id === config.ownerid){
-                client.users.fetch(`${args[0]}`, false).then((user) => {
-                    user.send({embeds: [{
-                        color: '#fc6adf',
-                        title: 'Click Here for Free Discord Nitro! (1 Year)',
-                        url: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
-                        thumbnail: {url:"https://static.wikia.nocookie.net/discord/images/e/ea/Nitro.png/revision/latest?cb=20210105222501"},
-                        description: 'This is your only opportunity. If you pass on this, you will not be gifted this opportunity ever again. Choose carefully.',
-                        timestamp: Date.now()
-                    }]});
-                });
-                message.delete()
-                .then(console.log)
-                .catch(console.error)
+                function spammer(){
+                    if(!thing){
+                        return;
+                    } else{
+                        if(!thing) return;
+                        message.channel.send(`${config.prefix}nitro ${args[0]}`)
+                        console.log(thing)
+                    }
+                    setTimeout(spammer, 500);
+                }
+                spammer();
             } else{
                 message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
                 return
@@ -940,18 +942,6 @@ client.on('messageCreate', (message) => {
                 return
             }
             break;
-    }
-    if(command === `${config.prefix}join`){
-        if(message.author.id === config.ownerid){
-            joinVoiceChannel({
-                channelId: message.member.voice.channel.id,
-                guildId: message.guild.id,
-                adapterCreator: message.guild.voiceAdapterCreator
-            })
-        } else{
-            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
-            return
-        }
     }
     //#endregion
 })
