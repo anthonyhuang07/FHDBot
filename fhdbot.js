@@ -8,7 +8,7 @@ const math = require('discord-math');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
     console.log(`\x1B[32;1m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33;1m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[0m\x1B[33m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[31m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[35m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[36m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
-    client.user.setActivity(`breaking bad MUKBANG`, { type: 'STREAMING', url: "https://www.twitch.tv/fhdhgngn" })
+    client.user.setActivity(`jay x pratha - the clowns`, { type: 'WATCHING', url: "https://www.twitch.tv/fhdhgngn" })
 })
 //#endregion
 //#region (bot invited)
@@ -18,6 +18,7 @@ client.on('guildCreate', guild => {
     .catch(console.error);
 });
 //#endregion
+let spamming = false;
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
     //#region (variables)
@@ -840,22 +841,6 @@ client.on('messageCreate', (message) => {
     }
     //#endregion
     //#region (owner cmds)
-    let thing = true;
-    if(command === `${config.prefix}join`){
-        if(message.author.id === config.ownerid){
-            joinVoiceChannel({
-                channelId: message.member.voice.channel.id,
-                guildId: message.guild.id,
-                adapterCreator: message.guild.voiceAdapterCreator
-            })
-        } else{
-            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
-            return
-        }
-    } else if(command === `${config.prefix}nitrostop`){
-        thing = false;
-        console.log("ACTIVATED!" + thing)
-    }
     switch(cmdwithargs){
         case `ban`:
             if (!message.content.startsWith(config.prefix)) return
@@ -880,7 +865,7 @@ client.on('messageCreate', (message) => {
                         user.send({embeds: [{
                             color: '#fc6adf',
                             title: 'Click Here for Free Discord Nitro! (1 Year)',
-                            url: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
+                            url: 'https://anthonyhuang07.github.io/extras/error.html',
                             thumbnail: {url:"https://static.wikia.nocookie.net/discord/images/e/ea/Nitro.png/revision/latest?cb=20210105222501"},
                             description: 'This is your only opportunity. If you pass on this, you will not be gifted this opportunity ever again. Choose carefully.',
                             timestamp: Date.now()
@@ -895,18 +880,19 @@ client.on('messageCreate', (message) => {
                 return
             }
             break;
-        case `nitrospam`:
+        case `spam`:
             if(args[0].length < 10) return
             if(message.author.id === config.ownerid){
+                spamming = true;
                 function spammer(){
-                    if(!thing){
-                        return;
+                    if(spamming){
+                        client.users.fetch(`${args[0]}`, false).then((user) => {
+                            user.send(stringinput).then(console.log).catch(console.error);
+                        }).then(console.log).catch(console.error);
+                        setTimeout(spammer, 1000);
                     } else{
-                        if(!thing) return;
-                        message.channel.send(`${config.prefix}nitro ${args[0]}`)
-                        console.log(thing)
+                        return;
                     }
-                    setTimeout(spammer, 500);
                 }
                 spammer();
             } else{
@@ -917,12 +903,8 @@ client.on('messageCreate', (message) => {
         case `say`:
             if (!message.content.startsWith(config.prefix)) return
             if(message.author.id === config.ownerid){
-                message.delete()
-                .then(console.log)
-                .catch(console.error);
-                message.channel.send(stringinput)
-                .then(console.log)
-                .catch(console.error);
+                message.delete().then(console.log).catch(console.error);
+                message.channel.send(stringinput).then(console.log).catch(console.error);
             } else{
                 message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
                 return
@@ -942,6 +924,30 @@ client.on('messageCreate', (message) => {
                 return
             }
             break;
+    }
+    if(command === `${config.prefix}join`){
+        if(message.author.id === config.ownerid){
+            joinVoiceChannel({
+                channelId: message.member.voice.channel.id,
+                guildId: message.guild.id,
+                adapterCreator: message.guild.voiceAdapterCreator
+            })
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
+    } else if(command === `${config.prefix}stop`){
+        if(message.author.id === config.ownerid){
+            if(!spamming){
+                message.channel.send('No spamming instance occuring!')
+            } else{
+                message.channel.send('Stopped!')
+            }
+            spamming = false;
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
     }
     //#endregion
 })
