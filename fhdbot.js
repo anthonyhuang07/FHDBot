@@ -7,7 +7,7 @@ const config = require("./config.json");
 const math = require('discord-math');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
-    console.log(`\x1B[32;1m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33;1m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[0m\x1B[33m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[31m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[35m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[36m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)
+    console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)    
     client.user.setActivity(`jay x pratha - the clowns`, { type: 'WATCHING', url: "https://www.twitch.tv/fhdhgngn" })
 })
 //#endregion
@@ -34,7 +34,7 @@ client.on('messageCreate', (message) => {
         .setColor('RANDOM')
         .setTitle('FHDBot Help')
         .setDescription('The help menu for FHDBot.')
-        .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
+        .setThumbnail('https://i.imgur.com/mU0RScm.png')
         .addFields(
             { name: 'General', value: 
             `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\`\n- 2 Value Calculator \`(${config.prefix}calc <num1> <operator> <num2>)\``},
@@ -42,7 +42,7 @@ client.on('messageCreate', (message) => {
             `- Copypastas \`(${config.prefix}copypasta)\`\n- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Kirby's Return to Discord \`(${config.prefix}kirby)\``}
         )
         .setTimestamp()
-        .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
+        .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
         message.reply({ embeds: [helpEmbed]});
 
     } 
@@ -54,15 +54,15 @@ client.on('messageCreate', (message) => {
             .setColor('RANDOM')
             .setTitle('FHDBot Help (Owner)')
             .setDescription('The help menu for FHDBot. (Owner Commands)')
-            .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
+            .setThumbnail('https://i.imgur.com/mU0RScm.png')
             .addFields(
                 { name: 'General', value: 
-                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\`\n- Join Current VC \`(${config.prefix}join)\``},
+                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\`\n- Join Current VC \`(${config.prefix}join)\`\n- Spam Someone \`(${config.prefix}spam <id>)\`\n- Stop Running Processes \`(${config.prefix}stop)\``},
                 { name: 'Fun', value: 
                 `- Custom PP Size \`(${config.prefix}custompp <args>)\`\n- Free Nitro \`(${config.prefix}nitro <@user>)\``}
             )
             .setTimestamp()
-            .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mERBq3H.jpg' });
+            .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
             message.reply({ embeds: [ownerHelp]})
 
         } else{
@@ -790,7 +790,7 @@ client.on('messageCreate', (message) => {
     .setColor('RANDOM') 
     .setTitle('About FHDBot')
     .setDescription(`Creator: <@${config.ownerid}>\nUptime: ${uptime}\n[Source Code](https://github.com/anthonyhuang07/FHDBot)\n[Bot Token](https://www.youtube.com/watch?v=oHg5SJYRHA0)`)
-    .setThumbnail('https://i.imgur.com/mERBq3H.jpg')
+    .setThumbnail('https://i.imgur.com/mU0RScm.png')
     .setFooter({ text: `Made with discord.js v13`, iconURL: `https://i.imgur.com/CLXNXbU.png` });
     switch(command){
         case `${config.prefix}prefix`:
@@ -813,7 +813,7 @@ client.on('messageCreate', (message) => {
         case `${config.prefix}invite`:
             message.channel.send({embeds: [{
                 color: 'RANDOM', 
-                thumbnail: {url:"https://i.imgur.com/mERBq3H.jpg"},
+                thumbnail: {url:"https://i.imgur.com/mU0RScm.png"},
                 title: 'Invite FHDBot!',
                 description: '[✅ Default Invite](https://discord.com/api/oauth2/authorize?client_id=963533621812158474&permissions=388096&scope=bot)\n[⚠️ Administrator Permisions Invite](https://discord.com/api/oauth2/authorize?client_id=963533621812158474&permissions=8&scope=bot)',
                 timestamp: new Date()
@@ -886,6 +886,7 @@ client.on('messageCreate', (message) => {
                 spamming = true;
                 function spammer(){
                     if(spamming){
+                        if(!spamming) return;
                         client.users.fetch(`${args[0]}`, false).then((user) => {
                             user.send(stringinput).then(console.log).catch(console.error);
                         }).then(console.log).catch(console.error);
@@ -951,4 +952,44 @@ client.on('messageCreate', (message) => {
     }
     //#endregion
 })
+client.on('messageCreate', (message) => {
+    function getRandomItem(arr) {
+        const randomIndex = Math.floor(Math.random() * arr.length);
+        const item = arr[randomIndex];
+        return item;
+    }
+
+    let words = ['ratio', 'bozo', 'can pooper']
+    let randomNumber = Math.floor(Math.random() * 21);
+
+    for (let i = 0; i < words.length; i++) {
+        if (message.content.toLowerCase().includes(words[i])) {
+          if(message.author.id === "628672513345454122" || message.author.id === "963533621812158474") return;
+          message.reply('shut up bozo')
+          message.react("🤡")
+          message.react("🤓")
+          break;
+        }
+    }
+
+    if(message.content.toLowerCase().includes('your')){
+        randomNumber = Math.floor(Math.random() * 6);
+        console.log('Your detector: ' + randomNumber)
+        if(randomNumber === 1){
+            message.reply("you're*")
+        }
+    } else if(message.content.toLowerCase() === 'who'){
+        randomNumber = Math.floor(Math.random() * 2);
+        console.log('Who asked detector: ' + randomNumber)
+        if(randomNumber === 0){
+            message.reply("asked")
+        }
+    } else if(message.content.toLowerCase() === 'what'){
+        randomNumber = Math.floor(Math.random() * 2);
+        console.log('What ever detector: ' + randomNumber)
+        if(randomNumber === 1){
+            message.reply("ever")
+        }
+    }
+});
 //#endregion
