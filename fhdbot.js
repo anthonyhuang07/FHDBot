@@ -1,3 +1,4 @@
+
 //#region (startup and variables)
 require('dotenv').config()
 const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction, MessageAttachment, VoiceChannel } = require('discord.js');
@@ -959,15 +960,14 @@ client.on('messageCreate', (message) => {
         return item;
     }
 
-    let words = ['ratio', 'bozo', 'can pooper']
+    let words = ['ratio', 'can pooper', 'bozo']
     let randomNumber = Math.floor(Math.random() * 21);
 
     for (let i = 0; i < words.length; i++) {
         if (message.content.toLowerCase().includes(words[i])) {
           if(message.author.id === "628672513345454122" || message.author.id === "963533621812158474") return;
           message.reply('shut up bozo')
-          message.react("🤡")
-          message.react("🤓")
+          message.react("🤡").then(console.log).catch(console.error); message.react("🤓").then(console.log).catch(console.error);
           break;
         }
     }
@@ -975,7 +975,7 @@ client.on('messageCreate', (message) => {
     if(message.content.toLowerCase().includes('your')){
         randomNumber = Math.floor(Math.random() * 6);
         console.log('Your detector: ' + randomNumber)
-        if(randomNumber === 1){
+        if(randomNumber === 0){
             message.reply("you're*")
         }
     } else if(message.content.toLowerCase() === 'who'){
@@ -984,13 +984,13 @@ client.on('messageCreate', (message) => {
         if(randomNumber === 0){
             message.reply("asked")
         }
-        if(randomNumber === 3){
+        if(randomNumber === 1){
             message.reply("cares")
         }
     } else if(message.content.toLowerCase() === 'what'){
         randomNumber = Math.floor(Math.random() * 2);
         console.log('What ever detector: ' + randomNumber)
-        if(randomNumber === 1){
+        if(randomNumber === 0){
             message.reply("ever")
         }
     }
