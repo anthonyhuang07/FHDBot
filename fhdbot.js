@@ -979,10 +979,13 @@ client.on('messageCreate', (message) => {
             message.reply("you're*")
         }
     } else if(message.content.toLowerCase() === 'who'){
-        randomNumber = Math.floor(Math.random() * 2);
+        randomNumber = Math.floor(Math.random() * 4);
         console.log('Who asked detector: ' + randomNumber)
         if(randomNumber === 0){
             message.reply("asked")
+        }
+        if(randomNumber === 3){
+            message.reply("cares")
         }
     } else if(message.content.toLowerCase() === 'what'){
         randomNumber = Math.floor(Math.random() * 2);
