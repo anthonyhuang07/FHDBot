@@ -4,6 +4,8 @@ const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton,
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, entersState, StreamType, AudioPlayerStatus, VoiceConnectionStatus } = require('@discordjs/voice');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const config = require("./config.json");
+let highscore = require("./highscore.json");
+const fs = require('fs');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
     console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)    
@@ -25,8 +27,9 @@ let correctCountryName = "";
 let correctChild = "";
 let guesserId = "";
 let stackerId = "";
-let stackedCountries = "";
-let highScore = 0;
+let stackedCountries = {
+    highscore: ""
+}
 //#endregion
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
@@ -53,19 +56,20 @@ client.on('messageCreate', (message) => {
             return;
         } 
 
-        if(stackedCountries > highScore){
-            highScore = stackedCountries;
+        if(stackedCountries.highscore > highscore.highscore){
+            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {})
+            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" }))
         }
 
         if(message.content === correctChild) {
-            stackedCountries++;
+            stackedCountries.highscore++;
             message.react('✅')
-            message.reply(`✅ You have successfully murded a child! Your stacked countries count is now **${stackedCountries}**.`)
-        } else if(stackedCountries === 0 && message.content !== correctChild) {
+            message.reply(`✅ You have successfully murded a child! The stacked countries count is now **${stackedCountries.highscore}**.`)
+        } else if(stackedCountries.highscore === 0 && message.content !== correctChild) {
             message.react('❌')
             message.reply(`❌ You have failed to murd the child! Please try again!`)
         } else{
-            stackedCountries = 0;
+            stackedCountries.highscore = 0;
             message.react('❌')
             message.reply(`❌ You have failed to murd the child! Your stacked countries have collapsed. Please try again!`)
         }
@@ -490,7 +494,7 @@ client.on('messageCreate', (message) => {
     }
 
     if(command === `${config.prefix}stackhighscore`){
-        message.reply(`The current high score for country stacking is **${highScore} countries.**`)
+        message.reply(`The current high score for country stacking is **${highscore.highscore} countries.**`)
     }
     //#region (general commands)
     let totalSeconds = (client.uptime / 1000);
