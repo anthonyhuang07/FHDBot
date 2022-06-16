@@ -207,13 +207,17 @@ client.on('messageCreate', (message) => {
     //#endregion
     //#region (countries guessing)
     const countries = [
-        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Afghanistan", flag: "https://cdn.britannica.com/40/5340-050-AA46700D/Flag-Afghanistan.jpg"},
         {name: "Albania", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/1200px-Flag_of_Albania.svg.png"},
         {name: "Algeria", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Algeria.svg/1200px-Flag_of_Algeria.svg.png"},
         {name: "Andorra", flag: "https://cdn.britannica.com/83/5583-050-2F48FD32/Flag-Andorra.jpg"},
         {name: "Angola", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Angola.svg/1200px-Flag_of_Angola.svg.png"},
         {name: "Antigua and Barbuda", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Flag_of_Antigua_and_Barbuda.svg/800px-Flag_of_Antigua_and_Barbuda.svg.png"},
+        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
+        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
+        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
+        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
+        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Argentina", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/1200px-Flag_of_Argentina.svg.png"},
         {name: "Armenia", flag: "https://www.worldatlas.com/img/flag/am-flag.jpg"},
         {name: "Aruba", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flag_of_Aruba.svg/1200px-Flag_of_Aruba.svg.png"},
