@@ -57,8 +57,8 @@ client.on('messageCreate', (message) => {
         } 
 
         if(stackedCountries.highscore > highscore.highscore){
-            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {})
-            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" }))
+            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {}).catch(console.error)
+            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" })).catch(console.error)
         }
 
         if(message.content === correctChild) {
