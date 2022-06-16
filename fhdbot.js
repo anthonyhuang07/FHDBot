@@ -20,8 +20,13 @@ client.on('guildCreate', guild => {
 //#region (global variables)
 let spamming = false;
 let guessingCountry = false;
+let murdingChildren = false;
 let correctCountryName = "";
-let guesserId = ""
+let correctChild = "";
+let guesserId = "";
+let stackerId = "";
+let stackedCountries = "";
+let highScore = 0;
 //#endregion
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
@@ -37,6 +42,34 @@ client.on('messageCreate', (message) => {
             message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
         }
         guessingCountry = false;
+    }
+
+    if(murdingChildren) {
+        if(message.author.id !== stackerId) return;
+
+        if(message.content >= 3){
+            message.reply('Invalid number! Try again.')
+            murdingChildren = false;
+            return;
+        } 
+
+        if(stackedCountries > highScore){
+            highScore = stackedCountries;
+        }
+
+        if(message.content === correctChild) {
+            stackedCountries++;
+            message.react('✅')
+            message.reply(`✅ You have successfully murded a child! Your stacked countries count is now **${stackedCountries}**.`)
+        } else if(stackedCountries === 0 && message.content !== correctChild) {
+            message.react('❌')
+            message.reply(`❌ You have failed to murd the child! Please try again!`)
+        } else{
+            stackedCountries = 0;
+            message.react('❌')
+            message.reply(`❌ You have failed to murd the child! Your stacked countries have collapsed. Please try again!`)
+        }
+        murdingChildren = false;
     }
     //#endregion
     //#region (variables)
@@ -57,7 +90,7 @@ client.on('messageCreate', (message) => {
             { name: 'General', value: 
             `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
             { name: 'Fun', value: 
-            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\``}
+            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\`\n- Stack the Countries \`(${config.prefix}stack)\`\n- Stack the Countries Highscore \`(${config.prefix}stackhighscore)\``}
         )
         .setTimestamp()
         .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
@@ -427,6 +460,38 @@ client.on('messageCreate', (message) => {
     }
 
     //#endregion
+    //#region (countries stacking)
+    if(command === `${config.prefix}stack`){
+        correctChild = Math.floor(Math.random() * 4);
+        let reply = new MessageEmbed()
+        .setTitle("Which child to murd?")
+        .setImage('https://qph.cf2.quoracdn.net/main-qimg-ba736e92a938b20dde36b1ef30dd0e3d')
+        .setColor("RANDOM")
+        .setFooter('Type 1 or 2 to murd the child.')
+
+        message.reply({ embeds: [ reply ] })
+        murdingChildren = true;
+        stackerId = message.author.id;
+        switch(correctChild){
+            case 0:
+                correctChild = '2'
+                break;
+            case 1:
+                correctChild = '1'
+                break;
+            case 2:
+                correctChild = '2'
+                break;
+            case 3:
+                correctChild = '1'
+                break;
+        }
+        console.log('correctChild: ' + correctChild)
+    }
+
+    if(command === `${config.prefix}stackhighscore`){
+        message.reply(`The current high score for country stacking is **${highScore} countries.**`)
+    }
     //#region (general commands)
     let totalSeconds = (client.uptime / 1000);
     let hours = Math.floor(totalSeconds / 3600);
@@ -586,6 +651,7 @@ client.on('messageCreate', (message) => {
     //#endregion
 })
 client.on('messageCreate', (message) => {
+    if(message.author.id === client.user.id) return;
     function getRandomItem(arr) {
         const randomIndex = Math.floor(Math.random() * arr.length);
         const item = arr[randomIndex];
