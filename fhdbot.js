@@ -26,13 +26,15 @@ let guesserId = ""
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
     if(message.author.id === client.user.id) return;
-    //#region (priority)
+    //#region (priority)    
     if(guessingCountry) {
         if(message.author.id !== guesserId) return;
         if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
-            message.reply(`Correct! The correct answer was **${correctCountryName}**!`)
+            message.react('✅')
+            message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
         } else{
-            message.reply(`Wrong! The correct answer was **${correctCountryName}**!`)
+            message.react('❌')
+            message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
         }
         guessingCountry = false;
     }
@@ -213,7 +215,6 @@ client.on('messageCreate', (message) => {
         {name: "Andorra", flag: "https://cdn.britannica.com/83/5583-050-2F48FD32/Flag-Andorra.jpg"},
         {name: "Angola", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Angola.svg/1200px-Flag_of_Angola.svg.png"},
         {name: "Antigua and Barbuda", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Flag_of_Antigua_and_Barbuda.svg/800px-Flag_of_Antigua_and_Barbuda.svg.png"},
-        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
@@ -473,7 +474,7 @@ client.on('messageCreate', (message) => {
     }
     //#endregion
     //#region (owner cmds)
-    switch(cmdwithargs){
+    switch(cmdwithargs){    
         case `ban`:
             if (!message.content.startsWith(config.prefix)) return
             if(message.author.id === config.ownerid){
@@ -598,7 +599,7 @@ client.on('messageCreate', (message) => {
         if (message.content.toLowerCase().includes(words[i])) {
           if(message.author.id === "628672513345454122" || message.author.id === "963533621812158474") return;
           message.reply('shut up bozo')
-          message.react("🤡").then(console.log).catch(console.error); message.react("🤓").then(console.log).catch(console.error);
+          message.react("🤡").catch(console.error); message.react("🤓").catch(console.error);
           break;
         }
     }
