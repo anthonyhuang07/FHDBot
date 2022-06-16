@@ -28,223 +28,14 @@ let correctChild = "";
 let guesserId = "";
 let stackerId = "";
 let stackedCountries = {
-    highscore: ""
+    highscore: "",
+    record: ""
 }
 //#endregion
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
     if(message.author.id === client.user.id) return;
     //#region (priority)    
-    if(guessingCountry) {
-        if(message.author.id !== guesserId) return;
-        if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
-            message.react('✅')
-            message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
-        } else{
-            message.react('❌')
-            message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
-        }
-        guessingCountry = false;
-    }
-
-    if(murdingChildren) {
-        if(message.author.id !== stackerId) return;
-
-        if(message.content >= 3){
-            message.reply('Invalid number! Try again.')
-            murdingChildren = false;
-            return;
-        } 
-
-        if(stackedCountries.highscore > highscore.highscore){
-            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {}).catch(console.error)
-            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" })).catch(console.error)
-        }
-
-        if(message.content === correctChild) {
-            stackedCountries.highscore++;
-            message.react('✅')
-            message.reply(`✅ You have successfully murded a child! The stacked countries count is now **${stackedCountries.highscore}**.`)
-        } else if(stackedCountries.highscore === 0 && message.content !== correctChild) {
-            message.react('❌')
-            message.reply(`❌ You have failed to murd the child! Please try again!`)
-        } else{
-            stackedCountries.highscore = 0;
-            message.react('❌')
-            message.reply(`❌ You have failed to murd the child! Your stacked countries have collapsed. Please try again!`)
-        }
-        murdingChildren = false;
-    }
-    //#endregion
-    //#region (variables)
-    if (!message.content.startsWith(config.prefix)) return;
-    const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-    const command = message.content.toLowerCase();
-    const cmdwithargs = args.shift().toLowerCase();
-    const stringinput = args.join(" ")
-    //#endregion
-    //#region (help menus)
-    if(command === `${config.prefix}help` || message.content === `<@963533621812158474>`){
-        const helpEmbed = new MessageEmbed()
-        .setColor('RANDOM')
-        .setTitle('FHDBot Help')
-        .setDescription('The help menu for FHDBot.')
-        .setThumbnail('https://i.imgur.com/mU0RScm.png')
-        .addFields(
-            { name: 'General', value: 
-            `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
-            { name: 'Fun', value: 
-            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\`\n- Stack the Countries \`(${config.prefix}stack)\`\n- Stack the Countries Highscore \`(${config.prefix}stackhighscore)\``}
-        )
-        .setTimestamp()
-        .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
-        message.reply({ embeds: [helpEmbed]});
-
-    } 
-    
-    if(command === `${config.prefix}ownerhelp`){
-        if (!message.content.startsWith(config.prefix)) return
-        if(message.author.id === config.ownerid){
-            const ownerHelp = new MessageEmbed()
-            .setColor('RANDOM')
-            .setTitle('FHDBot Help (Owner)')
-            .setDescription('The help menu for FHDBot. (Owner Commands)')
-            .setThumbnail('https://i.imgur.com/mU0RScm.png')
-            .addFields(
-                { name: 'General', value: 
-                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\`\n- Join Current VC \`(${config.prefix}join)\`\n- Spam Someone \`(${config.prefix}spam <id>)\`\n- Stop Running Processes \`(${config.prefix}stop)\``},
-                { name: 'Fun', value: 
-                `- Custom PP Size \`(${config.prefix}custompp <args>)\`\n- Free Nitro \`(${config.prefix}nitro <@user>)\``}
-            )
-            .setTimestamp()
-            .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
-            message.reply({ embeds: [ownerHelp]})
-
-        } else{
-            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
-            return
-        }
-    }
-
-    //#endregion
-    //#region (shipping)
-    const ship = args[0]+args[1]
-    function shipcharcode(array){
-        let total = 1
-        for(let i = 0, l = array.length; i < l; i++){
-            let adder = array.charCodeAt(i)
-            total += adder
-        }
-        return total;
-    }
-    let percentage = shipcharcode(ship)%101
-    let opinion;
-    let bar;
-    const full = '<:full:970688329936928788>'
-    const empty = '<:empty:970688344868655134>'
-    if(percentage === 100){
-        opinion = '**PERFECT!** :heartpulse:'
-        bar = full+full+full+full+full+full+full+full+full+full
-    } else if(percentage <= 99 && percentage >= 90){
-        opinion = 'EXTREMELY Compatible! :laughing::heart:'
-        bar = full+full+full+full+full+full+full+full+full+empty
-    } else if(percentage < 90 && percentage >= 80){
-        opinion = 'Very Compatible! :smiley:'
-        bar = full+full+full+full+full+full+full+full+empty+empty
-    } else if(percentage < 80 && percentage >= 70){
-        opinion = 'Fairly Compatible! :blush:'
-        bar = full+full+full+full+full+full+full+empty+empty+empty
-    } else if(percentage === 69){
-        opinion = 'Nice :smirk:'
-        bar = full+empty+full+empty+full+empty+full+empty+full+empty
-    } else if(percentage < 69 && percentage >= 60){
-        opinion = 'A small chance of being compatible. 🙂'
-        bar = full+full+full+full+full+full+empty+empty+empty+empty
-    } else if(percentage < 60 && percentage >= 50){
-        opinion = 'Extremely small compatibility chance. 🤨'
-        bar = full+full+full+full+full+empty+empty+empty+empty+empty
-    } else if(percentage < 50 && percentage >= 40){
-        opinion = 'Not really compatible. 😐'
-        bar = full+full+full+full+empty+empty+empty+empty+empty+empty
-    } else if(percentage < 40 && percentage >= 30){
-        opinion = 'Pretty bad match. 😕'
-        bar = full+full+full+empty+empty+empty+empty+empty+empty+empty
-    } else if(percentage < 30 && percentage >= 20){
-        opinion = 'Bad match. 🙁'
-        bar = full+full+empty+empty+empty+empty+empty+empty+empty+empty
-    } else if(percentage < 20 && percentage >= 10){
-        opinion = 'Awful match. :face_vomiting:'
-        bar = full+empty+empty+empty+empty+empty+empty+empty+empty+empty
-    } else if(percentage < 10 && percentage >= 1){
-        opinion = 'TERRIBLE MATCH :face_vomiting::skull:'
-        bar = empty+empty+empty+empty+empty+empty+empty+empty+empty+empty
-    } else if(percentage === 0){
-        opinion = `L YOU AREN'T COMPATIBLE AT ALL :rofl:`
-        bar = '💀💀💀💀💀💀💀💀💀💀'
-    }
-
-    if(cmdwithargs === `ship`){
-        if (!args[1]){
-            message.reply(`Bruh, what do you want to ship???`)
-            return
-        } 
-        if (!message.content.startsWith(config.prefix)) return
-        message.channel.send({ embeds: [{
-            color: '#fc6adf', 
-            title: `:heartpulse:  ${args[0]} and ${args[1]}  :heartpulse:`,
-            description: `${bar}\n\n**${percentage}%** - ${opinion}`,
-        }]})
-        .then(console.log)
-        .catch(console.error);
-    }
-    //#endregion
-    //#region (pp size)
-    const ppbar = ['You have no PP 🙁','8D','8=D','8==D','8===D','8====D','8=====D','8======D','8=======D','8========D','8=========D','8==========D','8===========D','8============D','8=============D','8==============D','8===============D','8================D','8=================D','8==================D','8===================D','8====================D']
-    if(command.startsWith(`${config.prefix}pp`)){
-        if(!message.mentions.members.size){
-            message.channel.send({embeds:[{
-                color: 'RANDOM',
-                title: `PP Size Calculator`,
-                description: `${message.author}'s pp size\n${ppbar[Math.floor(Math.random() * ppbar.length)]}`
-            }]})
-        } else{
-            message.channel.send({embeds:[{
-                color: 'RANDOM',
-                title: `PP Size Calculator`,
-                description: `${message.mentions.users.first()}'s pp size\n${ppbar[Math.floor(Math.random() * ppbar.length)]}`
-            }]})
-        }
-    }
-    if(cmdwithargs === `custompp`){
-        if (!message.content.startsWith(config.prefix)) return
-        if(message.author.id === config.ownerid){
-            message.delete()
-            .then(console.log)
-            .catch(console.error);
-            message.channel.send({embeds:[{
-                color: 'RANDOM',
-                title: `PP Size Calculator`,
-                description: `${message.author}'s pp size\n${args[0]}`
-            }]})
-            .then(console.log)
-            .catch(console.error);
-        } else{
-            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
-            return
-        }
-    }
-    //#endregion
-    //#region (8ball)
-    const eightBall = ['🟩 It is decidedly so.','🟥 My sources say no.','🟩 Signs point to yes.',"🟥 Don't count on it.",'🟩 Outlook good.','🟥 Outlook not so good.','🟩 Yes.','🟨 Reply hazy, try again.','🟩 It is certain.','🟨 Better not tell you now.','🟥 My reply is no.','🟨 Concentrate and ask again.','🟥 Very doubtful.']
-    if(cmdwithargs === `8ball`)
-    if (!args[0]){
-        message.reply(`Uh... What's your question???`)
-        return
-    } else{
-        message.reply(eightBall[Math.floor(Math.random() * eightBall.length)])
-    }
-    //#endregion
-    //#region (countries guessing)
     const countries = [
         {name: "Afghanistan", flag: "https://cdn.britannica.com/40/5340-050-AA46700D/Flag-Afghanistan.jpg"},
         {name: "Albania", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/1200px-Flag_of_Albania.svg.png"},
@@ -448,6 +239,224 @@ client.on('messageCreate', (message) => {
         {name: "Zimbabwe", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Flag_of_Zimbabwe.svg/1200px-Flag_of_Zimbabwe.svg.png"}
     ];
 
+    if(guessingCountry) {
+        if(message.author.id !== guesserId) return;
+        if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
+            message.react('✅')
+            message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
+        } else{
+            message.react('❌')
+            message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
+        }
+        guessingCountry = false;
+    }
+
+    if(murdingChildren) {
+        if(message.author.id !== stackerId) return;
+
+        if(message.content >= 3){
+            message.reply('Invalid number! Try again.')
+            murdingChildren = false;
+            return;
+        } 
+
+        if(stackedCountries.highscore > highscore.highscore){
+            stackedCountries.record = message.member.user.tag;
+            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {}).catch(console.error)
+            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" })).catch(console.error)
+        }
+
+        let death = Math.floor(Math.random() * 5);
+
+        if(message.content === correctChild) {
+            let country = Math.floor(Math.random() * countries.length)
+            stackedCountries.highscore++;
+            message.react('✅')
+            message.reply(`✅ You have successfully murded a child! The stacked countries count is now **${stackedCountries.highscore}**. The country you just stacked was **${countries[country].name}!**`)
+        } else if(stackedCountries.highscore === 0 && message.content !== correctChild) {
+            message.react('❌')
+            message.reply(`❌ You have failed to murd the child! Please try again!`)
+        } else if(message.content !== correctChild && death === 0){
+            stackedCountries.highscore = 0;
+            message.react('❌')
+            message.reply(`❌ You have failed to murd the child! **OH NO!** Your stacked countries have collapsed. Please try again!`)
+        } else if(message.content !== correctChild && death !== 0){
+            stackedCountries.highscore--;
+            message.react('❌')
+            message.reply(`❌ You have failed to murd the child! One country has fallen off the stack. You now have **${stackedCountries.highscore}** countries stacked.`)
+        }
+        murdingChildren = false;
+    }
+    //#endregion
+    //#region (variables)
+    if (!message.content.startsWith(config.prefix)) return;
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    const command = message.content.toLowerCase();
+    const cmdwithargs = args.shift().toLowerCase();
+    const stringinput = args.join(" ")
+    //#endregion
+    //#region (help menus)
+    if(command === `${config.prefix}help` || message.content === `<@963533621812158474>`){
+        const helpEmbed = new MessageEmbed()
+        .setColor('RANDOM')
+        .setTitle('FHDBot Help')
+        .setDescription('The help menu for FHDBot.')
+        .setThumbnail('https://i.imgur.com/mU0RScm.png')
+        .addFields(
+            { name: 'General', value: 
+            `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
+            { name: 'Fun', value: 
+            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\`\n- Stack the Countries \`(${config.prefix}stack)\` & Stack the Countries Highscore \`(${config.prefix}stackhs)\``}
+        )
+        .setTimestamp()
+        .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
+        message.reply({ embeds: [helpEmbed]});
+
+    } 
+    
+    if(command === `${config.prefix}ownerhelp`){
+        if (!message.content.startsWith(config.prefix)) return
+        if(message.author.id === config.ownerid){
+            const ownerHelp = new MessageEmbed()
+            .setColor('RANDOM')
+            .setTitle('FHDBot Help (Owner)')
+            .setDescription('The help menu for FHDBot. (Owner Commands)')
+            .setThumbnail('https://i.imgur.com/mU0RScm.png')
+            .addFields(
+                { name: 'General', value: 
+                `- Say Something \`(${config.prefix}say <string>)\`\n- Say Something in an Embed \`(${config.prefix}embedsay <string>)\`\n- Join Current VC \`(${config.prefix}join)\`\n- Spam Someone \`(${config.prefix}spam <id>)\`\n- Stop Running Processes \`(${config.prefix}stop)\``},
+                { name: 'Fun', value: 
+                `- Custom PP Size \`(${config.prefix}custompp <args>)\`\n- Free Nitro \`(${config.prefix}nitro <@user>)\``}
+            )
+            .setTimestamp()
+            .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
+            message.reply({ embeds: [ownerHelp]})
+
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
+    }
+
+    //#endregion
+    //#region (shipping)
+    const ship = args[0]+args[1]
+    function shipcharcode(array){
+        let total = 1
+        for(let i = 0, l = array.length; i < l; i++){
+            let adder = array.charCodeAt(i)
+            total += adder
+        }
+        return total;
+    }
+    let percentage = shipcharcode(ship)%101
+    let opinion;
+    let bar;
+    const full = '<:full:970688329936928788>'
+    const empty = '<:empty:970688344868655134>'
+    if(percentage === 100){
+        opinion = '**PERFECT!** :heartpulse:'
+        bar = full+full+full+full+full+full+full+full+full+full
+    } else if(percentage <= 99 && percentage >= 90){
+        opinion = 'EXTREMELY Compatible! :laughing::heart:'
+        bar = full+full+full+full+full+full+full+full+full+empty
+    } else if(percentage < 90 && percentage >= 80){
+        opinion = 'Very Compatible! :smiley:'
+        bar = full+full+full+full+full+full+full+full+empty+empty
+    } else if(percentage < 80 && percentage >= 70){
+        opinion = 'Fairly Compatible! :blush:'
+        bar = full+full+full+full+full+full+full+empty+empty+empty
+    } else if(percentage === 69){
+        opinion = 'Nice :smirk:'
+        bar = full+empty+full+empty+full+empty+full+empty+full+empty
+    } else if(percentage < 69 && percentage >= 60){
+        opinion = 'A small chance of being compatible. 🙂'
+        bar = full+full+full+full+full+full+empty+empty+empty+empty
+    } else if(percentage < 60 && percentage >= 50){
+        opinion = 'Extremely small compatibility chance. 🤨'
+        bar = full+full+full+full+full+empty+empty+empty+empty+empty
+    } else if(percentage < 50 && percentage >= 40){
+        opinion = 'Not really compatible. 😐'
+        bar = full+full+full+full+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 40 && percentage >= 30){
+        opinion = 'Pretty bad match. 😕'
+        bar = full+full+full+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 30 && percentage >= 20){
+        opinion = 'Bad match. 🙁'
+        bar = full+full+empty+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 20 && percentage >= 10){
+        opinion = 'Awful match. :face_vomiting:'
+        bar = full+empty+empty+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage < 10 && percentage >= 1){
+        opinion = 'TERRIBLE MATCH :face_vomiting::skull:'
+        bar = empty+empty+empty+empty+empty+empty+empty+empty+empty+empty
+    } else if(percentage === 0){
+        opinion = `L YOU AREN'T COMPATIBLE AT ALL :rofl:`
+        bar = '💀💀💀💀💀💀💀💀💀💀'
+    }
+
+    if(cmdwithargs === `ship`){
+        if (!args[1]){
+            message.reply(`Bruh, what do you want to ship???`)
+            return
+        } 
+        if (!message.content.startsWith(config.prefix)) return
+        message.channel.send({ embeds: [{
+            color: '#fc6adf', 
+            title: `:heartpulse:  ${args[0]} and ${args[1]}  :heartpulse:`,
+            description: `${bar}\n\n**${percentage}%** - ${opinion}`,
+        }]})
+        .then(console.log)
+        .catch(console.error);
+    }
+    //#endregion
+    //#region (pp size)
+    const ppbar = ['You have no PP 🙁','8D','8=D','8==D','8===D','8====D','8=====D','8======D','8=======D','8========D','8=========D','8==========D','8===========D','8============D','8=============D','8==============D','8===============D','8================D','8=================D','8==================D','8===================D','8====================D']
+    if(command.startsWith(`${config.prefix}pp`)){
+        if(!message.mentions.members.size){
+            message.channel.send({embeds:[{
+                color: 'RANDOM',
+                title: `PP Size Calculator`,
+                description: `${message.author}'s pp size\n${ppbar[Math.floor(Math.random() * ppbar.length)]}`
+            }]})
+        } else{
+            message.channel.send({embeds:[{
+                color: 'RANDOM',
+                title: `PP Size Calculator`,
+                description: `${message.mentions.users.first()}'s pp size\n${ppbar[Math.floor(Math.random() * ppbar.length)]}`
+            }]})
+        }
+    }
+    if(cmdwithargs === `custompp`){
+        if (!message.content.startsWith(config.prefix)) return
+        if(message.author.id === config.ownerid){
+            message.delete()
+            .then(console.log)
+            .catch(console.error);
+            message.channel.send({embeds:[{
+                color: 'RANDOM',
+                title: `PP Size Calculator`,
+                description: `${message.author}'s pp size\n${args[0]}`
+            }]})
+            .then(console.log)
+            .catch(console.error);
+        } else{
+            message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
+            return
+        }
+    }
+    //#endregion
+    //#region (8ball)
+    const eightBall = ['🟩 It is decidedly so.','🟥 My sources say no.','🟩 Signs point to yes.',"🟥 Don't count on it.",'🟩 Outlook good.','🟥 Outlook not so good.','🟩 Yes.','🟨 Reply hazy, try again.','🟩 It is certain.','🟨 Better not tell you now.','🟥 My reply is no.','🟨 Concentrate and ask again.','🟥 Very doubtful.']
+    if(cmdwithargs === `8ball`)
+    if (!args[0]){
+        message.reply(`Uh... What's your question???`)
+        return
+    } else{
+        message.reply(eightBall[Math.floor(Math.random() * eightBall.length)])
+    }
+    //#endregion
+    //#region (countries guessing)
     if(command === `${config.prefix}guess`) {
         let country = Math.floor(Math.random() * countries.length)
         let flag = countries[country].flag
@@ -462,7 +471,6 @@ client.on('messageCreate', (message) => {
         guessingCountry = true;
         guesserId = message.author.id;
     }
-
     //#endregion
     //#region (countries stacking)
     if(command === `${config.prefix}stack`){
@@ -493,9 +501,10 @@ client.on('messageCreate', (message) => {
         console.log('correctChild: ' + correctChild)
     }
 
-    if(command === `${config.prefix}stackhighscore`){
-        message.reply(`The current high score for country stacking is **${highscore.highscore} countries.**`)
+    if(command === `${config.prefix}stackhs`){
+        message.reply(`The current high score for country stacking is **${highscore.highscore} countries,** held by **${highscore.record}.**`)
     }
+    //#endregion
     //#region (general commands)
     let totalSeconds = (client.uptime / 1000);
     let hours = Math.floor(totalSeconds / 3600);
@@ -697,4 +706,3 @@ client.on('messageCreate', (message) => {
         }
     }
 });
-//#endregion
