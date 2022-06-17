@@ -49,7 +49,6 @@ client.on('messageCreate', (message) => {
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
-        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Argentina", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/1200px-Flag_of_Argentina.svg.png"},
         {name: "Armenia", flag: "https://www.worldatlas.com/img/flag/am-flag.jpg"},
         {name: "Aruba", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flag_of_Aruba.svg/1200px-Flag_of_Aruba.svg.png"},
@@ -475,6 +474,7 @@ client.on('messageCreate', (message) => {
         correctCountryName = countries[country].name
         guessingCountry = true;
         guesserId = message.author.id;
+        console.log('correctCountryName: ' + correctCountryName)
         if(!isTimer){
             isTimer = true;
             function timer(countdown){
@@ -500,7 +500,7 @@ client.on('messageCreate', (message) => {
         isStackDisabled= true;
         setTimeout(() => {
             isStackDisabled = false;
-        }, 3000);
+        }, 2500);
         correctChild = Math.floor(Math.random() * 4);
         let reply = new MessageEmbed()
         .setTitle("Which child to murd?")
@@ -542,7 +542,7 @@ client.on('messageCreate', (message) => {
         }
     }
 
-    if(command === `${config.prefix}stackhs`){
+    if(command === `${config.prefix}stackhs` || command === `${config.prefix}stackhighscore`){
         message.reply(`The current high score for country stacking is **${highscore.highscore} countries,** held by **${highscore.record}.**`)
     }
     //#endregion
