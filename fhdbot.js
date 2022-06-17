@@ -31,6 +31,9 @@ let stackedCountries = {
     highscore: "",
     record: ""
 }
+let isTimer = false;
+let isTimer2 = false;
+let isStackDisabled = false;
 //#endregion
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
@@ -249,6 +252,7 @@ client.on('messageCreate', (message) => {
             message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
         }
         guessingCountry = false;
+        isTimer = false;
     }
 
     if(murdingChildren) {
@@ -262,8 +266,8 @@ client.on('messageCreate', (message) => {
 
         if(stackedCountries.highscore > highscore.highscore){
             stackedCountries.record = message.member.user.tag;
-            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {}).catch(console.error)
-            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" })).catch(console.error)
+            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {})
+            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" }))
         }
 
         let death = Math.floor(Math.random() * 5);
@@ -286,6 +290,7 @@ client.on('messageCreate', (message) => {
             message.reply(`❌ You have failed to murd the child! One country has fallen off the stack. You now have **${stackedCountries.highscore}** countries stacked.`)
         }
         murdingChildren = false;
+        isTimer2 = false;
     }
     //#endregion
     //#region (variables)
@@ -470,16 +475,38 @@ client.on('messageCreate', (message) => {
         correctCountryName = countries[country].name
         guessingCountry = true;
         guesserId = message.author.id;
+        if(!isTimer){
+            isTimer = true;
+            function timer(countdown){
+                if(!isTimer) return;
+                if(countdown === 0){
+                    message.channel.send(`**Time's Up!** The correct answer was **${correctCountryName}!**`)
+                    isTimer = false;
+                    guessingCountry = false;
+                    return;
+                }
+                setTimeout(timer, 1000, countdown-1)
+            }
+            timer(20);
+        }
     }
     //#endregion
     //#region (countries stacking)
     if(command === `${config.prefix}stack`){
+        if(isStackDisabled){
+            message.reply(`This command is on cooldown! Try again later.`)
+            return;
+        }
+        isStackDisabled= true;
+        setTimeout(() => {
+            isStackDisabled = false;
+        }, 3000);
         correctChild = Math.floor(Math.random() * 4);
         let reply = new MessageEmbed()
         .setTitle("Which child to murd?")
         .setImage('https://qph.cf2.quoracdn.net/main-qimg-ba736e92a938b20dde36b1ef30dd0e3d')
         .setColor("RANDOM")
-        .setFooter('Type 1 or 2 to murd the child.')
+        reply.footer = {text: 'Type 1 or 2 to murd the child.'}
 
         message.reply({ embeds: [ reply ] })
         murdingChildren = true;
@@ -499,6 +526,20 @@ client.on('messageCreate', (message) => {
                 break;
         }
         console.log('correctChild: ' + correctChild)
+        if(!isTimer2){
+            isTimer2 = true;
+            function timer(countdown){
+                if(!isTimer2) return;
+                if(countdown === 0){
+                    message.channel.send(`**Time's Up!** You didn't murd anyone nor did you stack any countries.`)
+                    isTimer2 = false;
+                    murdingChildren = false;
+                    return;
+                }
+                setTimeout(timer, 1000, countdown-1)
+            }
+            timer(15);
+        }
     }
 
     if(command === `${config.prefix}stackhs`){
@@ -706,3 +747,4 @@ client.on('messageCreate', (message) => {
         }
     }
 });
+//#endregion
