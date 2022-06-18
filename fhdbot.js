@@ -28,12 +28,15 @@ let correctChild = "";
 let guesserId = "";
 let stackerId = "";
 let stackedCountries = {
-    highscore: "",
+    highscore: 0,
     record: ""
 }
 let isTimer = false;
 let isTimer2 = false;
 let isStackDisabled = false;
+let isGuessDisabled = false;
+let country = "";
+let stackedCountryNames = []
 //#endregion
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
@@ -272,21 +275,24 @@ client.on('messageCreate', (message) => {
         let death = Math.floor(Math.random() * 5);
 
         if(message.content === correctChild) {
-            let country = Math.floor(Math.random() * countries.length)
+            country = Math.floor(Math.random() * countries.length)
+            stackedCountryNames.unshift(countries[country].name)
             stackedCountries.highscore++;
             message.react('✅')
-            message.reply(`✅ You have successfully murded a child! The stacked countries count is now **${stackedCountries.highscore}**. The country you just stacked was **${countries[country].name}!**`)
+            message.reply(`✅ You have successfully murded a child! The stacked countries count is now **${stackedCountries.highscore}**. The country you just stacked was **${stackedCountryNames[0]}!**`)
         } else if(stackedCountries.highscore === 0 && message.content !== correctChild) {
             message.react('❌')
             message.reply(`❌ You have failed to murd the child! Please try again!`)
         } else if(message.content !== correctChild && death === 0){
             stackedCountries.highscore = 0;
+            stackedCountryNames = []
             message.react('❌')
             message.reply(`❌ You have failed to murd the child! **OH NO!** Your stacked countries have collapsed. Please try again!`)
         } else if(message.content !== correctChild && death !== 0){
             stackedCountries.highscore--;
             message.react('❌')
-            message.reply(`❌ You have failed to murd the child! One country has fallen off the stack. You now have **${stackedCountries.highscore}** countries stacked.`)
+            message.reply(`❌ You have failed to murd the child! **${stackedCountryNames[0]}** has fallen off the stack. You now have **${stackedCountries.highscore}** countries stacked.`)
+            stackedCountryNames.shift()
         }
         murdingChildren = false;
         isTimer2 = false;
@@ -310,7 +316,7 @@ client.on('messageCreate', (message) => {
             { name: 'General', value: 
             `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
             { name: 'Fun', value: 
-            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\`\n- Stack the Countries \`(${config.prefix}stack)\` & Stack the Countries Highscore \`(${config.prefix}stackhs)\``}
+            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\`\n- Stack the Countries by Murding Children \`(${config.prefix}stackhelp)\``}
         )
         .setTimestamp()
         .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
@@ -340,6 +346,22 @@ client.on('messageCreate', (message) => {
             message.reply(`You think you're a smart guy eh? You're not my owner, so shut the f@#$ up.`)
             return
         }
+    }
+
+    if(command === `${config.prefix}stackhelp`){
+        if (!message.content.startsWith(config.prefix)) return
+        const stackHelp = new MessageEmbed()
+        .setColor('RANDOM')
+        .setTitle('Stack The Countries Help')
+        .setDescription(`**What is stack the countries?**\n Stack the countries (by murding children) is an inside joke with a school server I was in. There's a mobile game called Stack The Countries, where you stack countries. I don't know why. Anyways, there's a channel in that school server called Stack the Countries screenshots, where people post Stack The Countries screenshots. I was bored one day and that channel was useless to me, so I just said a random statement, which was *stack the countries by murding children*. I spelled murdering wrong, which became murding, and I'm glad it came out that way, because now it's a weird inside joke.\n\n**How To Play:**\n To stack a country, use the ${config.prefix}stack command. This will give you 2 children to murd (not murder!). There is a 50/50 chance of one child being murded, but the other one won't get murded. If you choose the right child, you'll successfully stack a country, and your stack count will rise by 1. Or else, it will reduce by 1. It cannot reduce if the count is 0. There is a 1/5 chance for the stack to return to 0 when you fail a murd. The goal is to get the highest country stack.\n\n**Notes:**\n Country stacks are global, which means anyone can contribute to it. Somebody can stack a country, but another person can stack another country, making it 2 countries stacked. Return to 0s and failures will also count to the global stack.\n\n`)
+        .setThumbnail('https://i.imgur.com/mU0RScm.png')
+        .addFields(
+            { name: 'Commands:', value: 
+            `- Stack a country \`(${config.prefix}stack)\`\n- Stack Highscore \`(${config.prefix}stackhs OR ${config.prefix}stackhighscore)\`\n- Stack Help \`(${config.prefix}stackhelp)\`\n- Current Stack Score \`(${config.prefix}stackscore)\`\n- Current Stacked Countries \`(${config.prefix}stackedcountries)\``}
+        )
+        .setTimestamp()
+        .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
+        message.reply({ embeds: [stackHelp]})
     }
 
     //#endregion
@@ -462,6 +484,14 @@ client.on('messageCreate', (message) => {
     //#endregion
     //#region (countries guessing)
     if(command === `${config.prefix}guess`) {
+        if(isGuessDisabled){
+            message.reply(`This command is on cooldown! Try again later.`)
+            return;
+        }
+        isGuessDisabled= true;
+        setTimeout(() => {
+            isGuessDisabled = false;
+        }, 3000);
         let country = Math.floor(Math.random() * countries.length)
         let flag = countries[country].flag
         
@@ -544,6 +574,14 @@ client.on('messageCreate', (message) => {
 
     if(command === `${config.prefix}stackhs` || command === `${config.prefix}stackhighscore`){
         message.reply(`The current high score for country stacking is **${highscore.highscore} countries,** held by **${highscore.record}.**`)
+    } else if(command === `${config.prefix}stackscore`){
+        message.reply(`The current stack score is **${stackedCountries.highscore} countries.** Contribute to it with **${config.prefix}stack.**`)
+    } else if(command === `${config.prefix}stackedcountries`){
+        if(stackedCountryNames.length === 0){
+            message.reply(`There are currently no stacked countries!`)
+        } else{
+            message.reply(`The stack currently includes **${stackedCountryNames.join(', ')}.**`)
+        }
     }
     //#endregion
     //#region (general commands)
