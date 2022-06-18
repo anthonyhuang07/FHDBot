@@ -3,3 +3,5 @@
 /Presser/
 
 .env
+
+/json/config.json

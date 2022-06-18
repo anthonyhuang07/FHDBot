@@ -14,7 +14,7 @@ client.on('ready', () => {
 //#endregion
 //#region (bot invited)
 client.on('guildCreate', guild => {
-    guild.systemChannel.send(`Hi, I'm FHDBot. Thanks for inviting me! You can find my commands by typing ${config.prefix}help.`)
+    guild.systemChannel.send(`Hi, I'm FHDBot. Thanks for inviting me! You can find my commands by typing \`${config.prefix}help.\``)
     .then(console.log)
     .catch(console.error);
 });
@@ -273,6 +273,7 @@ client.on('messageCreate', (message) => {
         }
 
         let death = Math.floor(Math.random() * 5);
+        console.log('0 chance is: ' + death)
 
         if(message.content === correctChild) {
             country = Math.floor(Math.random() * countries.length)
