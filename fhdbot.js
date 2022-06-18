@@ -3,8 +3,8 @@ require('dotenv').config()
 const { Client, Intents, Message, MessageEmbed, MessageActionRow, MessageButton, MessageReaction, MessageAttachment, VoiceChannel } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, entersState, StreamType, AudioPlayerStatus, VoiceConnectionStatus } = require('@discordjs/voice');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const config = require("./config.json");
-let highscore = require("./highscore.json");
+const config = require("./json/config.json");
+let highscore = require("./json/highscore.json");
 const fs = require('fs');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
@@ -268,8 +268,8 @@ client.on('messageCreate', (message) => {
 
         if(stackedCountries.highscore > highscore.highscore){
             stackedCountries.record = message.member.user.tag;
-            fs.writeFile("./highscore.json", JSON.stringify(stackedCountries), (err) => {})
-            highscore = JSON.parse(fs.readFileSync("./highscore.json", { encoding: "utf-8", flag: "r" }))
+            fs.writeFile("./json/highscore.json", JSON.stringify(stackedCountries), (err) => {})
+            highscore = JSON.parse(fs.readFileSync("./json/highscore.json", { encoding: "utf-8", flag: "r" }))
         }
 
         let death = Math.floor(Math.random() * 5);
