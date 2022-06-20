@@ -5,6 +5,7 @@ const { joinVoiceChannel, createAudioPlayer, createAudioResource, entersState, S
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const config = require("./json/config.json");
 let highscore = require("./json/highscore.json");
+let streak = require("./json/streak.json");
 const fs = require('fs');
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
@@ -31,6 +32,10 @@ let stackedCountries = {
     highscore: 0,
     record: ""
 }
+let guessStreak = {
+    highscore: 0,
+    record: ""
+}
 let isTimer = false;
 let isTimer2 = false;
 let isStackDisabled = false;
@@ -49,8 +54,6 @@ client.on('messageCreate', (message) => {
         {name: "Andorra", flag: "https://cdn.britannica.com/83/5583-050-2F48FD32/Flag-Andorra.jpg"},
         {name: "Angola", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Angola.svg/1200px-Flag_of_Angola.svg.png"},
         {name: "Antigua and Barbuda", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Flag_of_Antigua_and_Barbuda.svg/800px-Flag_of_Antigua_and_Barbuda.svg.png"},
-        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
-        {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Nengish Union", flag: "https://media.discordapp.net/attachments/972647486915223562/986743144144072805/unknown.png"},
         {name: "Argentina", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/1200px-Flag_of_Argentina.svg.png"},
         {name: "Armenia", flag: "https://www.worldatlas.com/img/flag/am-flag.jpg"},
@@ -247,11 +250,28 @@ client.on('messageCreate', (message) => {
     if(guessingCountry) {
         if(message.author.id !== guesserId) return;
         if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
-            message.react('✅')
-            message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
+            guessStreak.highscore++;
+            if(guessStreak.highscore <= 1){
+                message.react('✅')
+                message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
+            } else{
+                message.react('✅')
+                message.reply(`✅ Correct! The correct answer was **${correctCountryName}**! Your streak is now **${guessStreak.highscore}.**`)
+            }
+            if(guessStreak.highscore > streak.highscore){
+                guessStreak.record = message.member.user.tag;
+                fs.writeFile("./json/streak.json", JSON.stringify(guessStreak), (err) => {})
+                streak = JSON.parse(fs.readFileSync("./json/streak.json", { encoding: "utf-8", flag: "r" }))
+            }
         } else{
-            message.react('❌')
-            message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
+            if(guessStreak.highscore <= 1){
+                message.react('❌')
+                message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
+            } else {
+                message.react('❌')
+                message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**! Your streak has been reset.`)
+            }
+            guessStreak.highscore = 0;
         }
         guessingCountry = false;
         isTimer = false;
@@ -317,7 +337,7 @@ client.on('messageCreate', (message) => {
             { name: 'General', value: 
             `- Prefix \`(${config.prefix}prefix)\`\n- API Ping \`(${config.prefix}ping)\`\n- About FHDBot \`(${config.prefix}about)\`\n- Invite FHDBot \`(${config.prefix}invite)\`\n- Date/Time/Unix Timestamp \`(${config.prefix}time)\``},
             { name: 'Fun', value: 
-            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\`\n- Stack the Countries by Murding Children \`(${config.prefix}stackhelp)\``}
+            `- Shipping \`(${config.prefix}ship <arg1> <arg2>)\`\n- PP Size \`(${config.prefix}pp [user])\`\n- Who Asked? \`(${config.prefix}whoasked)\` OR \`(${config.prefix}wh0asked)\`\n- Magic 8 Ball \`(${config.prefix}8ball <question>)\`\n- Guess the Flag \`(${config.prefix}guess)\` | GTF Highscore \`(${config.prefix}guesshs OR ${config.prefix}guesshighscore)\`\n- Stack the Countries by Murding Children \`(${config.prefix}stackhelp)\``}
         )
         .setTimestamp()
         .setFooter({ text: 'FHDBot', iconURL: 'https://i.imgur.com/mU0RScm.png' });
@@ -521,6 +541,10 @@ client.on('messageCreate', (message) => {
             timer(20);
         }
     }
+
+    if(command === `${config.prefix}guesshs` || command === `${config.prefix}guesshighscore`){
+        message.reply(`The current high score for country guessing is **${streak.highscore} countries,** held by **${streak.record}.**`)
+    }
     //#endregion
     //#region (countries stacking)
     if(command === `${config.prefix}stack`){
@@ -673,14 +697,17 @@ client.on('messageCreate', (message) => {
             break;
         case `spam`:
             if(args[0].length < 10) return
+            let pingCount = 0;
             if(message.author.id === config.ownerid){
                 spamming = true;
                 function spammer(){
                     if(spamming){
                         if(!spamming) return;
                         client.users.fetch(`${args[0]}`, false).then((user) => {
-                            user.send(stringinput).then(console.log).catch(console.error);
-                        }).then(console.log).catch(console.error);
+                            user.send(stringinput).catch(console.error);
+                            pingCount++;
+                            console.log('SPAMMING: ' + user.tag + ', PING: ' + pingCount)
+                        }).catch(console.error);
                         setTimeout(spammer, 1000);
                     } else{
                         return;
