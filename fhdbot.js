@@ -259,6 +259,7 @@ client.on('messageCreate', (message) => {
                 message.reply(`✅ Correct! The correct answer was **${correctCountryName}**! Your streak is now **${guessStreak.highscore}.**`)
             }
             if(guessStreak.highscore > streak.highscore){
+                if (message.member.user.id === '846070107049820190') return;
                 guessStreak.record = message.member.user.tag;
                 fs.writeFile("./json/streak.json", JSON.stringify(guessStreak), (err) => {})
                 streak = JSON.parse(fs.readFileSync("./json/streak.json", { encoding: "utf-8", flag: "r" }))
@@ -287,6 +288,7 @@ client.on('messageCreate', (message) => {
         } 
 
         if(stackedCountries.highscore > highscore.highscore){
+            if (message.member.user.id === '846070107049820190') return;
             stackedCountries.record = message.member.user.tag;
             fs.writeFile("./json/highscore.json", JSON.stringify(stackedCountries), (err) => {})
             highscore = JSON.parse(fs.readFileSync("./json/highscore.json", { encoding: "utf-8", flag: "r" }))
@@ -512,7 +514,7 @@ client.on('messageCreate', (message) => {
         isGuessDisabled= true;
         setTimeout(() => {
             isGuessDisabled = false;
-        }, 3000);
+        }, 2000);
         let country = Math.floor(Math.random() * countries.length)
         let flag = countries[country].flag
         
@@ -555,7 +557,7 @@ client.on('messageCreate', (message) => {
         isStackDisabled= true;
         setTimeout(() => {
             isStackDisabled = false;
-        }, 2500);
+        }, 2000);
         correctChild = Math.floor(Math.random() * 4);
         let reply = new MessageEmbed()
         .setTitle("Which child to murd?")
