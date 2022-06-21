@@ -809,7 +809,7 @@ client.on('messageCreate', (message) => {
         randomNumber = Math.floor(Math.random() * 2);
         console.log('What ever detector: ' + randomNumber)
         if(randomNumber === 0){
-            message.reply("ever")
+            message.reply("ever").catch(console.error)
         }
     }
 });
