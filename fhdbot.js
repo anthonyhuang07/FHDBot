@@ -46,7 +46,7 @@ let stackedCountryNames = []
 //#region (messageCreate)
 client.on('messageCreate', (message) => {
     if(message.author.id === client.user.id) return;
-    //#region (priority)    
+    //#region (priority)                                     
     const countries = [
         {name: "Afghanistan", flag: "https://cdn.britannica.com/40/5340-050-AA46700D/Flag-Afghanistan.jpg"},
         {name: "Albania", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/1200px-Flag_of_Albania.svg.png"},
