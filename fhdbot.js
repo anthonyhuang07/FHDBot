@@ -259,7 +259,6 @@ client.on('messageCreate', (message) => {
                 message.reply(`✅ Correct! The correct answer was **${correctCountryName}**! Your streak is now **${guessStreak.highscore}.**`)
             }
             if(guessStreak.highscore > streak.highscore){
-                if (message.member.user.id === '846070107049820190') return;
                 guessStreak.record = message.member.user.tag;
                 fs.writeFile("./json/streak.json", JSON.stringify(guessStreak), (err) => {})
                 streak = JSON.parse(fs.readFileSync("./json/streak.json", { encoding: "utf-8", flag: "r" }))
@@ -288,7 +287,6 @@ client.on('messageCreate', (message) => {
         } 
 
         if(stackedCountries.highscore > highscore.highscore){
-            if (message.member.user.id === '846070107049820190') return;
             stackedCountries.record = message.member.user.tag;
             fs.writeFile("./json/highscore.json", JSON.stringify(stackedCountries), (err) => {})
             highscore = JSON.parse(fs.readFileSync("./json/highscore.json", { encoding: "utf-8", flag: "r" }))
