@@ -8,7 +8,7 @@ let streak = require("./json/streak.json");
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
     console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)    
-    client.user.setActivity(`stacking countries by murding children`, { type: 'COMPETING', url: "https://www.twitch.tv/fhdhgngn" })
+    client.user.setActivity(`UNDER CONSTRUCTION`, { type: 'STREAMING', url: "https://www.twitch.tv/fhdhgngn" })
 })
 //#endregion
 //#region (command handler [VERY BAD])
