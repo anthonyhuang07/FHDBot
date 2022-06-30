@@ -1,6 +1,3 @@
-client.on('messageCreate', (message) => {
-    //#region (priority)                                     
-
     if(murdingChildren) {
         if(message.author.id !== stackerId) return;
 
@@ -99,17 +96,7 @@ client.on('messageCreate', (message) => {
         }
     }
 
-    if(command === `${config.prefix}stackhs` || command === `${config.prefix}stackhighscore`){
-        message.reply(`The current high score for country stacking is **${highscore.highscore} countries,** held by **${highscore.record}.**`)
-    } else if(command === `${config.prefix}stackscore`){
-        message.reply(`The current stack score is **${stackedCountries.highscore} countries.** Contribute to it with **${config.prefix}stack.**`)
-    } else if(command === `${config.prefix}stackedcountries`){
-        if(stackedCountryNames.length === 0){
-            message.reply(`There are currently no stacked countries!`)
-        } else{
-            message.reply(`The stack currently includes **${stackedCountryNames.join(', ')}.**`)
-        }
-    }
+
     //#endregion
     //#region (general commands)
     let totalSeconds = (client.uptime / 1000);

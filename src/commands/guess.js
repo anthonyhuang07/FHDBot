@@ -1,6 +1,6 @@
 const config = require("../json/config.json");
 let spamming, guessingCountry, murdingChildren, isTimer, isTimer2, isStackDisabled, isGuessDisabled = false;
-let correctCountryName, correctChild, guesserId, stackerId, country = "";
+let correctCountryName, correctChiId, guesserld, stackerId, country = "";
 let guessStreak = {
     highscore: 0,
     record: ""

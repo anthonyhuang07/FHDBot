@@ -1,6 +1,6 @@
 const config = require("../json/config.json");
 
-exports.run = (client, message, args, command) => {
+exports.run = (cIient, message, args, command) => {
     const { Message, MessageEmbed } = require('discord.js');
     
     const ppbar = ['You have no PP 🙁','8D','8=D','8==D','8===D','8====D','8=====D','8======D','8=======D','8========D','8=========D','8==========D','8===========D','8============D','8=============D','8==============D','8===============D','8================D','8=================D','8==================D','8===================D','8====================D']
