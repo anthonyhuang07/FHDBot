@@ -1,6 +1,7 @@
 const config = require("../json/config.json");
-let spamming, guessingCountry, murdingChildren, isTimer, isTimer2, isStackDisabled, isGuessDisabled = false;
-let correctCountryName, correctChiId, guesserld, stackerId, country = "";
+const { MessageEmbed } = require("discord.js")
+let guessingCountry, isTimer, isGuessDisabled = false;
+let correctCountryName, guesserId, country = "";
 let guessStreak = {
     highscore: 0,
     record: ""
@@ -205,9 +206,10 @@ const countries = [
     {name: "Zimbabwe", flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Flag_of_Zimbabwe.svg/1200px-Flag_of_Zimbabwe.svg.png"}
 ];
 
-exports.run = (client, message, args, command) => {
-    const { Message, MessageEmbed } = require('discord.js');
-
+function guess(message) {
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+    
     if(guessingCountry) {
         if(message.author.id !== guesserId) return;
         if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
@@ -238,41 +240,45 @@ exports.run = (client, message, args, command) => {
         isTimer = false;
     }
 
-    if(isGuessDisabled){
-        message.reply(`This command is on cooldown! Try again later.`)
-        return;
-    }
-    isGuessDisabled= true;
-    setTimeout(() => {
-        isGuessDisabled = false;
-    }, 2000);
-    country = Math.floor(Math.random() * countries.length)
-    let flag = countries[country].flag
-    
-    let reply = new MessageEmbed()
-    .setTitle("Guess the country!")
-    .setImage(flag)
-    .setColor("RANDOM")
-    
-    message.reply({ embeds: [ reply ] })
-    correctCountryName = countries[country].name
-    guessingCountry = true;
-    guesserId = message.author.id;
-    console.log('correctCountryName: ' + correctCountryName)
-    if(!isTimer){
-        isTimer = true;
-        function timer(countdown){
-            if(!isTimer) return;
-            if(countdown === 0){
-                message.channel.send(`**Time's Up!** The correct answer was **${correctCountryName}!**`)
-                isTimer = false;
-                guessingCountry = false;
-                return;
-            }
-            setTimeout(timer, 1000, countdown-1)
+    if(command === `guess`){
+        if(isGuessDisabled){
+            message.reply(`This command is on cooldown! Try again later.`)
+            return;
         }
-        timer(20);
+        isGuessDisabled= true;
+        setTimeout(() => {
+            isGuessDisabled = false;
+        }, 2000);
+        country = Math.floor(Math.random() * countries.length)
+        let flag = countries[country].flag
+        
+        let reply = new MessageEmbed()
+        .setTitle("Guess the country!")
+        .setImage(flag)
+        .setColor("RANDOM")
+        
+        message.reply({ embeds: [ reply ] })
+        correctCountryName = countries[country].name
+        guessingCountry = true;
+        guesserId = message.author.id;
+        console.log('correctCountryName: ' + correctCountryName)
+        if(!isTimer){
+            isTimer = true;
+            function timer(countdown){
+                if(!isTimer) return;
+                if(countdown === 0){
+                    message.channel.send(`**Time's Up!** The correct answer was **${correctCountryName}!**`)
+                    isTimer = false;
+                    guessingCountry = false;
+                    return;
+                }
+                setTimeout(timer, 1000, countdown-1)
+            }
+            timer(20);
+        }
     }
 }
 
-exports.name = "guess";
+module.exports = (commandHandler) => {
+    commandHandler.set(`${config.prefix}guess`, guess)
+}

@@ -1,8 +1,11 @@
 const config = require("../json/config.json");
+const { MessageEmbed } = require("discord.js")
 
-exports.run = (client, message, args, command) => {
-    const { Message, MessageEmbed } = require('discord.js');
-    
+function ship(message) {
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+    const stringinput = args.join(" ")
+
     const ship = args[0]+args[1]
     function shipcharcode(array){
         let total = 1
@@ -58,16 +61,20 @@ exports.run = (client, message, args, command) => {
         bar = '💀💀💀💀💀💀💀💀💀💀'
     }
 
-    if (!args[1]){
-        message.reply(`Bruh, what do you want to ship???`)
-        return
-    } else if (!message.content.startsWith(config.prefix)) return
-    message.channel.send({ embeds: [{
-        color: '#fc6adf', 
-        title: `:heartpulse:  ${args[0]} and ${args[1]}  :heartpulse:`,
-        description: `${bar}\n\n**${percentage}%** - ${opinion}`,
-    }]})
-    .catch(console.error);
+    if(command === `ship`){
+        if (!args[1]){
+            message.reply(`Bruh, what do you want to ship???`)
+            return
+        } else if (!message.content.startsWith(config.prefix)) return
+        message.channel.send({ embeds: [{
+            color: '#fc6adf', 
+            title: `:heartpulse:  ${args[0]} and ${args[1]}  :heartpulse:`,
+            description: `${bar}\n\n**${percentage}%** - ${opinion}`,
+        }]})
+        .catch(console.error);
+    }
 }
 
-exports.name = "ship";
+module.exports = (commandHandler) => {
+    commandHandler.set(`${config.prefix}ship`, ship)
+}
