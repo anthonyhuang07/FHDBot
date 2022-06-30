@@ -1,5 +1,8 @@
 const config = require("../json/config.json");
 const { MessageEmbed } = require("discord.js")
+let highscore = require("../json/highscore.json");
+let streak = require("../json/streak.json");
+
 let guessingCountry, isTimer, isGuessDisabled = false;
 let correctCountryName, guesserId, country = "";
 let guessStreak = {
@@ -210,36 +213,6 @@ function guess(message) {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
     
-    if(guessingCountry) {
-        if(message.author.id !== guesserId) return;
-        if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
-            guessStreak.highscore++;
-            if(guessStreak.highscore <= 1){
-                message.react('✅')
-                message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
-            } else{
-                message.react('✅')
-                message.reply(`✅ Correct! The correct answer was **${correctCountryName}**! Your streak is now **${guessStreak.highscore}.**`)
-            }
-            if(guessStreak.highscore > streak.highscore){
-                guessStreak.record = message.member.user.tag;
-                fs.writeFile("./json/streak.json", JSON.stringify(guessStreak), (err) => {})
-                streak = JSON.parse(fs.readFileSync("./json/streak.json", { encoding: "utf-8", flag: "r" }))
-            }
-        } else{
-            if(guessStreak.highscore <= 1){
-                message.react('❌')
-                message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
-            } else {
-                message.react('❌')
-                message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**! Your streak has been reset.`)
-            }
-            guessStreak.highscore = 0;
-        }
-        guessingCountry = false;
-        isTimer = false;
-    }
-
     if(command === `guess`){
         if(isGuessDisabled){
             message.reply(`This command is on cooldown! Try again later.`)
@@ -279,6 +252,42 @@ function guess(message) {
     }
 }
 
-module.exports = (commandHandler) => {
-    commandHandler.set(`${config.prefix}guess`, guess)
+module.exports = {
+    isGuessingCountry: () => {
+        return guessingCountry;
+    },
+    
+    handleGuessing: (message) => {
+        if(message.author.id !== guesserId) return;
+        if(message.content.toLowerCase() === correctCountryName.toLowerCase()) {
+            guessStreak.highscore++;
+            if(guessStreak.highscore <= 1){
+                message.react('✅')
+                message.reply(`✅ Correct! The correct answer was **${correctCountryName}**!`)
+            } else{
+                message.react('✅')
+                message.reply(`✅ Correct! The correct answer was **${correctCountryName}**! Your streak is now **${guessStreak.highscore}.**`)
+            }
+            if(guessStreak.highscore > streak.highscore){
+                guessStreak.record = message.member.user.tag;
+                fs.writeFile("./json/streak.json", JSON.stringify(guessStreak), (err) => {})
+                streak = JSON.parse(fs.readFileSync("./json/streak.json", { encoding: "utf-8", flag: "r" }))
+            }
+        } else{
+            if(guessStreak.highscore <= 1){
+                message.react('❌')
+                message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**!`)
+            } else {
+                message.react('❌')
+                message.reply(`❌ Wrong! The correct answer was **${correctCountryName}**! Your streak has been reset.`)
+            }
+            guessStreak.highscore = 0;
+        }
+        guessingCountry = false;
+        isTimer = false;
+    },
+    
+    registerCommands: (commandHandler) => {
+        commandHandler.set(`${config.prefix}guess`, guess)
+    }
 }
