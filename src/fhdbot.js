@@ -3,8 +3,6 @@ require('dotenv').config()
 const { Client, Intents } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const config = require("./json/config.json");
-let highscore = require("./json/highscore.json");
-let streak = require("./json/streak.json");
 client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
     console.log(`\x1B[31m███████╗██╗░░██╗██████╗░██████╗░░█████╗░████████╗\n\x1B[33m██╔════╝██║░░██║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝\n\x1B[32m█████╗░░███████║██║░░██║██████╦╝██║░░██║░░░██║░░░\n\x1B[36m██╔══╝░░██╔══██║██║░░██║██╔══██╗██║░░██║░░░██║░░░\n\x1B[34m██║░░░░░██║░░██║██████╔╝██████╦╝╚█████╔╝░░░██║░░░\n\x1B[35m╚═╝░░░░░╚═╝░░╚═╝╚═════╝░╚═════╝░░╚════╝░░░░╚═╝░░░\n\x1B[0m${client.user.tag} has started up!\n`)    
@@ -22,7 +20,7 @@ ship(commandHandler);
 help(commandHandler);
 pp(commandHandler);
 eightBall(commandHandler);
-guess(commandHandler);
+guess.registerCommands(commandHandler);
 //#endregion
 //#region (bot invited)
 client.on('guildCreate', guild => {
@@ -32,7 +30,11 @@ client.on('guildCreate', guild => {
 //#endregion
 client.on('messageCreate', (message) => { //normal commands
     if(message.author.id === client.user.id) return;
-    if (message.content.indexOf(config.prefix) !== 0) return;
+    if (message.content.indexOf(config.prefix) !== 0) {
+        if (guess.isGuessingCountry()) {
+            guess.handleGuessing(message)
+        }
+    }
     
     const handler = commandHandler.get(message.content.split(" ")[0])
     if (handler !== undefined){
